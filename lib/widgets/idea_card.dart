@@ -1,6 +1,6 @@
+import 'package:eds_funds/classes/idea_class.dart';
 import 'package:flutter/material.dart';
 import 'package:eds_funds/utils/constants.dart';
-import 'package:eds_funds/models/idea.dart';
 
 class IdeaCard extends StatelessWidget {
   const IdeaCard({
@@ -26,7 +26,8 @@ class IdeaCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
                   Container(
-                    padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 8.0),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 3.0, horizontal: 8.0),
                     margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
                     decoration: BoxDecoration(
                       gradient: new LinearGradient(

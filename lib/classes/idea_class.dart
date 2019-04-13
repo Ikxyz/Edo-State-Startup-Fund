@@ -15,4 +15,13 @@ class Idea {
       this.body,
       this.category,
       this.places});
+  factory Idea.object(Map<String, dynamic> map) {
+    return Idea(
+        title: map['title'],
+        image: map['image'],
+        body: map['body'],
+        category: map['category'],
+        excerpt: map['excerpt'],
+        places: map['places']);
+  }
 }

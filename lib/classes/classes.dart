@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:path/path.dart' as $path;
 import 'package:flutter/material.dart';
-import 'package:timeago/timeago.dart' as timeago;
+import 'package:timeago/timeago.dart' as timeAgo;
 import 'package:random_string/random_string.dart' as random;
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -74,7 +74,7 @@ Future<dynamic> uploadFile(File file, String fileName,
 
   final String fileExt = $path.basename(file.path).split('.')[1];
   final StorageReference _ref =
-      FirebaseStorage().ref().child(location).child('${fileName}.${fileExt}');
+      FirebaseStorage().ref().child(location).child('$fileName.$fileExt');
   final upload = await _ref.putFile(file);
   bool ok = await upload.events.any((eve) {
     if (eve.type == StorageTaskEventType.success) return true;

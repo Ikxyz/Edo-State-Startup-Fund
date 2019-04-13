@@ -1,14 +1,15 @@
+import 'package:eds_funds/classes/idea_class.dart';
 import 'package:eds_funds/utils/constants.dart';
-import 'package:eds_funds/models/idea.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:eds_funds/data/data.dart';
 
 class IdeaScreen extends StatelessWidget {
   final int id;
   IdeaScreen({Key key, @required this.id}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    final story = Idea.generate()[id];
+    final story = generateIdeaData().first;
     return new Material(
       child: Scaffold(
         backgroundColor: Colors.transparent,

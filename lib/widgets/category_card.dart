@@ -1,6 +1,6 @@
+import 'package:eds_funds/classes/startup_category_class.dart';
 import 'package:eds_funds/utils/constants.dart';
 import 'package:flutter/material.dart';
-import '../models/category.dart';
 
 class CategoryCard extends StatelessWidget {
   CategoryCard({

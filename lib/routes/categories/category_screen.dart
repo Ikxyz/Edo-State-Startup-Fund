@@ -1,15 +1,16 @@
 import 'dart:async';
+import 'package:eds_funds/classes/idea_class.dart';
+import 'package:eds_funds/classes/startup_category_class.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:eds_funds/models/category.dart';
-import 'package:eds_funds/models/idea.dart';
 import 'package:eds_funds/widgets/idea_card.dart';
+import 'package:eds_funds/data/data.dart';
 
 class CategoryScreen extends StatefulWidget {
   final Category destination;
   final int id;
 
-  CategoryScreen(this.id) : destination = Category.generate()[id];
+  CategoryScreen(this.id) : destination = Category();
 
   @override
   CategoryDetailScreenState createState() {

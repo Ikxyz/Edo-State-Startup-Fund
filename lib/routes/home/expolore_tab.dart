@@ -1,10 +1,11 @@
-import 'package:eds_funds/models/category.dart';
+import 'package:eds_funds/classes/startup_category_class.dart';
 import 'package:eds_funds/routes/profile/profile_screen.dart';
 import 'package:eds_funds/widgets/app_icon.dart';
 import 'package:eds_funds/widgets/category_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:eds_funds/utils/constants.dart';
+import 'package:eds_funds/data/data.dart';
 
 class ExploreTab extends StatefulWidget {
   @override
@@ -15,7 +16,7 @@ class ExploreTab extends StatefulWidget {
 
 class ExploreTabState extends State<ExploreTab> with TickerProviderStateMixin {
   final _searchFocusNode = FocusNode();
-  final List<Category> _categories = Category.generate();
+  final List<Category> _categories = generateCategoryData();
 
   AnimationController controller;
   Animation<double> opacity;

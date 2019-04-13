@@ -6,14 +6,14 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
-  cloud_firestore: 0.8.2+3
-  firebase_auth: ^0.6.6
-  firebase_storage: ^1.0.4
+  cloud_firestore: ^0.9.13+1
+  firebase_auth: ^0.8.4+2
+  firebase_storage: ^2.1.0+1
   flutter_launcher_icons: ^0.7.0
-  shared_preferences: ^0.5.1+1
-  image_picker: ^0.4.12+1
+  shared_preferences: ^0.5.2
+  image_picker: ^0.5.3+1
   cached_network_image: ^0.7.0
-  timeago: ^2.0.10
+  timeago: ^2.0.14
   random_string: ^0.0.2
   google_sign_in: ^3.3.0+1
 

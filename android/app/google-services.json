@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1040190715290",
+    "firebase_url": "https://edcash.firebaseio.com",
+    "project_id": "edcash",
+    "storage_bucket": "edcash.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1040190715290:android:27f1d117c3f331ad",
+        "android_client_info": {
+          "package_name": "codehub.eds_funds"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1040190715290-6a10dl4og07f364i48u26ebj0qm10i6p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "codehub.eds_funds",
+            "certificate_hash": "9a2fe8645c53c894717176dedb55a8f78c523cab"
+          }
+        },
+        {
+          "client_id": "1040190715290-uqn84tfvrvissvu36takatlbnb6ka7gf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJLCmpxjStERuVnS8mifyh4xPinyin3qs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1040190715290-uqn84tfvrvissvu36takatlbnb6ka7gf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
