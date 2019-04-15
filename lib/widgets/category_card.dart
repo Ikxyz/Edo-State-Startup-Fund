@@ -34,7 +34,7 @@ class CategoryCard extends StatelessWidget {
         child: Column(
           children: <Widget>[
             Expanded(
-              flex: 4,
+              flex: 2,
               child: Hero(
                 tag: "${category.title}_bg",
                 child: Container(
@@ -51,8 +51,8 @@ class CategoryCard extends StatelessWidget {
                 ),
               ),
             ),
-            Expanded(
-              flex: 3,
+            new Expanded(
+              flex: 2,
               child: Container(
                 padding: EdgeInsets.all(20.0),
                 child: Column(
@@ -64,8 +64,9 @@ class CategoryCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          Padding(
+                          new Padding(
                             padding: const EdgeInsets.only(bottom: 8.0),
                             child: Row(
                               children: <Widget>[
@@ -82,13 +83,14 @@ class CategoryCard extends StatelessWidget {
                               ],
                             ),
                           ),
-                          Text(
+                          new Text(
                             category.description,
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                                fontSize: 14.0,
-                                color: AppColors.bodyText,
-                                fontFamily: 'Raleway'),
+                              fontSize: 14.0,
+                              color: AppColors.bodyText,
+                              fontFamily: 'Raleway',
+                            ),
                           ),
                         ],
                       ),

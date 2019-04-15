@@ -16,9 +16,12 @@ class _NewIdeaScreenState extends State<NewIdeaScreen> {
         keyboardType: TextInputType.text,
         textCapitalization: TextCapitalization.words,
         decoration: const InputDecoration(
-          isDense: true,
-          hintText: "Enter Start-up Name",
-        ),
+            isDense: true,
+            hintText: "Enter Start-up Name",
+            hintStyle: TextStyle(
+              fontFamily: 'QuickSand',
+              fontWeight: FontWeight.bold,
+            )),
         validator: (value) =>
             (value.isNotEmpty) ? null : 'Please fill this filed',
       ),
@@ -39,6 +42,26 @@ class _NewIdeaScreenState extends State<NewIdeaScreen> {
           filled: true,
           isDense: true,
           hintText: "Briefly tell us what you are doing",
+          hintStyle: TextStyle(
+            fontFamily: 'QuickSand',
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildEnterCategory() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+      child: DropdownButtonFormField(
+        items: [],
+        decoration: InputDecoration(
+          hintText: 'Select Start-up Category',
+          hintStyle: TextStyle(
+            fontFamily: 'QuickSand',
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
@@ -48,21 +71,45 @@ class _NewIdeaScreenState extends State<NewIdeaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text(
+          'Register Your StartUp',
+          style: TextStyle(
+            fontFamily: 'QuickSand',
+          ),
+        ),
         leading: IconButton(
           icon: Icon(CupertinoIcons.back),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
+        actions: <Widget>[
+          CupertinoButton(
+            child: Icon(
+              Icons.check,
+              color: Colors.white,
+            ),
+            onPressed: () {},
+          )
+        ],
       ),
       body: ListView(
+        padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
         children: <Widget>[
           SizedBox(height: 20.0),
+          //StartUp Name
           TextHeader(
             title: 'Start-up Name',
             trailing: '',
           ),
           buildEnterName(),
+          //StartUp Category
+          TextHeader(
+            title: 'Start-up Category',
+            trailing: '',
+          ),
+          buildEnterCategory(),
+          //Photo Gallery
           TextHeader(
             title: 'Start-up photo gallery',
             trailing: '',
@@ -84,23 +131,25 @@ class _NewIdeaScreenState extends State<NewIdeaScreen> {
               ],
             ),
           ),
+          //StartUp Description
           TextHeader(
             title: 'Start-up Description',
             trailing: '',
           ),
           buildEnterDescription(),
+          //StartUp Collaborators
           TextHeader(
             title: 'Select Team Members',
             trailing: '',
           ),
-          Container(
+          new Container(
             height: 50.0,
             child: Row(
               children: <Widget>[
                 SizedBox(width: 5.0),
                 TeamAvatar(),
                 TeamAvatar(),
-                Container(
+                new Container(
                   height: 40.0,
                   width: 40.0,
                   child: Icon(
@@ -108,8 +157,11 @@ class _NewIdeaScreenState extends State<NewIdeaScreen> {
                     color: Colors.white,
                   ),
                   decoration: BoxDecoration(
-                      color: Colors.blueGrey,
-                      borderRadius: BorderRadius.all(Radius.circular(30.0))),
+                    color: Colors.blueGrey,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(30.0),
+                    ),
+                  ),
                 )
               ],
             ),
@@ -120,6 +172,7 @@ class _NewIdeaScreenState extends State<NewIdeaScreen> {
   }
 }
 
+//AddNew Image Widget
 class AddNewImage extends StatelessWidget {
   const AddNewImage({
     Key key,
@@ -150,6 +203,7 @@ class AddNewImage extends StatelessWidget {
   }
 }
 
+//GalleryImage Item
 class GalleryImageItem extends StatelessWidget {
   GalleryImageItem({
     Key key,
@@ -193,6 +247,7 @@ class GalleryImageItem extends StatelessWidget {
   }
 }
 
+//Team Member Image Item
 class TeamAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

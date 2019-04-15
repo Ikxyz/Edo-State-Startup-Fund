@@ -204,12 +204,6 @@ class ExploreTabState extends State<ExploreTab> with TickerProviderStateMixin {
     );
   }
 
-  Widget buildPageView() {
-    return Expanded(
-      child: null,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -228,7 +222,7 @@ class ExploreTabState extends State<ExploreTab> with TickerProviderStateMixin {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     new Padding(
-                      padding: const EdgeInsets.only(top: 20.0),
+                      padding: const EdgeInsets.only(top: 30.0, left: 20.0),
                       child: Row(
                         children: <Widget>[
                           SizedBox(width: 10.0),

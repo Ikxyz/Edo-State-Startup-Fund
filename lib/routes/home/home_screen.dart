@@ -10,7 +10,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
-
   Widget build(BuildContext ctx) {
     return Scaffold(
       body: ExploreTab(),
