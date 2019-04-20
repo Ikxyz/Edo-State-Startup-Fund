@@ -1,4 +1,3 @@
-import 'package:eds_funds/routes/ideas/new_idea_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -10,23 +9,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
+
   Widget build(BuildContext ctx) {
     return Scaffold(
       body: ExploreTab(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) {
-                return NewIdeaScreen();
-              },
-            ),
-          );
-        },
-        child: Icon(
-          Icons.add_to_photos,
-        ),
-      ),
     );
   }
 }

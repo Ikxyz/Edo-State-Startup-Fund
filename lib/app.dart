@@ -1,6 +1,6 @@
-import 'package:eds_funds/routes/categories/category_screen.dart';
+import 'package:eds_funds/routes/startup/startup_screen.dart';
 import 'package:eds_funds/routes/home/home_screen.dart';
-import 'package:eds_funds/routes/ideas/ideas_screen.dart';
+import 'package:eds_funds/routes/details/startup_detail_screen.dart';
 import 'package:eds_funds/widgets/route_animations.dart';
 import "package:flutter/material.dart";
 import 'package:eds_funds/routes/search/search_screen.dart';
@@ -11,18 +11,18 @@ class EDSFunds extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: _buildTheme(),
       onGenerateRoute: (RouteSettings settings) {
-        if (settings.name.contains("categories")) {
+        if (settings.name.contains("startup")) {
           final categoryId =
-          int.parse(settings.name.replaceAll("categories", ""));
+          int.parse(settings.name.replaceAll("startup", ""));
           return FadeInRoute(builder: (context) {
-            return CategoryScreen(categoryId);
+            return StartupScreen(categoryId);
           });
         }
         if (settings.name.contains("ideas")) {
           final int ideaId =
           int.parse(settings.name.replaceAll("ideas", ""));
           return SlideLeftRoute(builder: (context) {
-            return IdeaScreen(id: ideaId,);
+            return StartupDetailScreen(id: ideaId,);
           });
         }
         switch (settings.name) {

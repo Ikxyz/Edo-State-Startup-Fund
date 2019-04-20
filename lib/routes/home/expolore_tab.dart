@@ -1,11 +1,9 @@
-import 'package:eds_funds/classes/startup_category_class.dart';
+import 'package:eds_funds/models/category.dart';
 import 'package:eds_funds/routes/profile/profile_screen.dart';
-import 'package:eds_funds/widgets/app_icon.dart';
-import 'package:eds_funds/widgets/category_card.dart';
+import 'package:eds_funds/routes/home/category_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:eds_funds/utils/constants.dart';
-import 'package:eds_funds/data/data.dart';
 
 class ExploreTab extends StatefulWidget {
   @override
@@ -16,7 +14,7 @@ class ExploreTab extends StatefulWidget {
 
 class ExploreTabState extends State<ExploreTab> with TickerProviderStateMixin {
   final _searchFocusNode = FocusNode();
-  final List<Category> _categories = generateCategoryData();
+  final List<Category> _categories = Category.generate();
 
   AnimationController controller;
   Animation<double> opacity;
@@ -162,48 +160,6 @@ class ExploreTabState extends State<ExploreTab> with TickerProviderStateMixin {
     );
   }
 
-  Widget buildTopBar() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8.0),
-      child: new Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          CupertinoButton(
-            child: Row(
-              children: [
-                Text(
-                  "STARTUP CATEGORIES",
-                  style: TextStyle(
-                    letterSpacing: 1.0,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.darkGrey,
-                    fontSize: 14.0,
-                    fontFamily: 'QuickSand',
-                  ),
-                ),
-                RotatedBox(
-                  child: new Icon(
-                    CupertinoIcons.left_chevron,
-                    size: 12.0,
-                  ),
-                  quarterTurns: 3,
-                ),
-              ],
-            ),
-            onPressed: null,
-          ),
-          CupertinoButton(
-            child: AppIcon(
-              size: 16.0,
-              image: IconImage.controls,
-            ),
-            onPressed: null,
-          )
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -222,7 +178,7 @@ class ExploreTabState extends State<ExploreTab> with TickerProviderStateMixin {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     new Padding(
-                      padding: const EdgeInsets.only(top: 30.0, left: 20.0),
+                      padding: const EdgeInsets.only(top: 40.0),
                       child: Row(
                         children: <Widget>[
                           SizedBox(width: 10.0),
@@ -261,6 +217,7 @@ class ExploreTabState extends State<ExploreTab> with TickerProviderStateMixin {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(30)),
                             color: Colors.blue,
+                            image: DecorationImage(image: AssetImage('assets/images/idea4.png'))
                           ),
                         ),
                         onTap: () {
@@ -296,7 +253,7 @@ class ExploreTabState extends State<ExploreTab> with TickerProviderStateMixin {
                       Category currentDestination = _categories[index];
                       return GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context, "categories$index");
+                          Navigator.pushNamed(context, "startup$index");
                         },
                         child: CategoryCard(
                           category: currentDestination,

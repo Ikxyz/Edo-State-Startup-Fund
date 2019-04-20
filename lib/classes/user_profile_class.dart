@@ -43,7 +43,7 @@ class UsersProfile {
       this.latitude,
       this.longitude});
 
-  factory UsersProfile.object(Map map) {
+  factory UsersProfile.toObject(Map map) {
     if (map == null) return null;
     return UsersProfile(
         firstName: map['firstName'],
