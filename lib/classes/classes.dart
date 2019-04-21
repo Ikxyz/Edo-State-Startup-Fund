@@ -2,17 +2,23 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:path/path.dart' as $path;
 import 'package:flutter/material.dart';
-import 'package:timeago/timeago.dart' as timeAgo;
-import 'package:random_string/random_string.dart' as random;
+// import 'package:timeago/timeago.dart' as timeAgo;
+// import 'package:random_string/random_string.dart' as random;
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
-String getID({lenght: 28}) => random.randomAlphaNumeric(lenght);
+//String getID({lenght: 28}) => random.randomAlphaNumeric(lenght);
 
+/// return an error message if value does not pass the validation
+///validation requires val: not equal null
 String isNotNull(val) {
   return val.toString().isNotEmpty ? null : 'Can\'t be left empty ';
 }
 
+/// return an error message if value does not pass the validation
+///validation requires val: not equal null, must contain @ char, must contain dot('.') and length must be more than 4 characters
 String isEmail(val) {
   return val.toString().isNotEmpty &&
           val.toString().contains('@') &&
@@ -22,26 +28,74 @@ String isEmail(val) {
       : 'enter a valid email ';
 }
 
+/// return an error message if value does not pass the validation
+///validation requires val: not equal null and length must be more or equal to 10 characters
 String isNumber(val) {
-  return val.toString().length == 10 && val.toString().isNotEmpty
+  return val.toString().length >= 10 && val.toString().isNotEmpty
       ? null
       : 'Telepnone number mush be 10 digit';
 }
 
+/// return an error message if value does not pass the validation
+///validation requires val: not equal null and length must be more than 7 characters
 String isPassword(val) {
   return val.toString().isNotEmpty && val.toString().length > 7
       ? null
-      : 'Password must be up to 8 charaters';
+      : 'Password must be up to 8 characters';
 }
 
+/// return a double of current width
 double getWidth(context, {val}) {
   if (val == null) return MediaQuery.of(context).size.width;
   return ((val / 100) * MediaQuery.of(context).size.width);
 }
 
+/// return a double of screen height.
 double getHeight(context, {val}) {
   if (val == null) return MediaQuery.of(context).size.height;
   return ((val / 100) * MediaQuery.of(context).size.height);
+}
+
+/// Navigate to a new route by passing a route widget with a fade animation
+/// animation duration is 1 seconds
+void navigate(
+  context,
+  to,
+) {
+  Navigator.push(
+    context,
+    PageRouteBuilder(
+      pageBuilder: (context, animation1, animation2) {
+        return to;
+      },
+      transitionsBuilder: (context, animation1, animation2, child) {
+        return FadeTransition(
+          opacity: animation1,
+          child: child,
+        );
+      },
+      transitionDuration: Duration(milliseconds: 1000),
+    ),
+  );
+}
+
+/// Signin with federated account
+dynamic signInWith({GlobalKey<ScaffoldState> state}) async {
+  GoogleSignIn _googleSignIn = GoogleSignIn();
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  // GoogleSignInAccount _userAccount = await _googleSignIn.signIn();
+  // GoogleSignInAuthentication _validate = await _userAccount.authentication;
+
+  // final AuthCredential _authCredential = GoogleAuthProvider.getCredential(
+  //     accessToken: _validate.accessToken, idToken: _validate.accessToken);
+
+  final user = await _auth.signInAnonymously();
+  print("signed in " + user.uid);
+  if (state != null)
+    state.currentState.showSnackBar(new SnackBar(
+      content: Text('Signed in anonymously'),
+    ));
+  return user;
 }
 
 /// Returns a user selected image or image from camera as a file based on the optional bool parameter supplied
@@ -54,6 +108,7 @@ Future<File> getImage({bool camera: true}) async {
 
 /// Show
 showSnackBar(GlobalKey<ScaffoldState> _scaffoldState, String content) {
+  if (content == null) return;
   if (_scaffoldState.currentState == null) return;
   _scaffoldState.currentState.showSnackBar(SnackBar(
     content: Text(content),
@@ -223,6 +278,8 @@ Map<String, dynamic> jsonUserProfile(
         {firstName,
         lastName,
         email,
+        pwd,
+        retypePwd,
         tel,
         state,
         isAdmin,
@@ -246,6 +303,8 @@ Map<String, dynamic> jsonUserProfile(
       "firstName": firstName,
       "lastName": lastName,
       "email": email,
+      "pwd": pwd,
+      "retypePwd": retypePwd,
       "tel": tel,
       "address": address,
       "city": city,

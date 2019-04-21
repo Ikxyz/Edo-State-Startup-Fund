@@ -93,7 +93,7 @@ packages:
       name: firebase_auth
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.8.4+2"
+    version: "0.8.4+5"
   firebase_core:
     dependency: transitive
     description:
@@ -138,9 +138,9 @@ packages:
       name: google_sign_in
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.3.0+1"
+    version: "4.0.1+3"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       url: "https://pub.dartlang.org"
@@ -216,13 +216,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
-  random_string:
+  rxdart:
     dependency: "direct main"
     description:
-      name: random_string
+      name: rxdart
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.2"
+    version: "0.21.0"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -291,13 +291,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.2"
-  timeago:
-    dependency: "direct main"
-    description:
-      name: timeago
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.14"
   typed_data:
     dependency: transitive
     description:

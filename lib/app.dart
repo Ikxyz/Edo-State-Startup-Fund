@@ -1,47 +1,50 @@
+import 'package:eds_funds/routes/login/login.dart';
 import 'package:eds_funds/routes/startup/startup_screen.dart';
 import 'package:eds_funds/routes/home/home_screen.dart';
 import 'package:eds_funds/routes/details/startup_detail_screen.dart';
 import 'package:eds_funds/widgets/route_animations.dart';
 import "package:flutter/material.dart";
 import 'package:eds_funds/routes/search/search_screen.dart';
+import 'classes/auth.dart';
 
 class EDSFunds extends StatelessWidget {
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: _buildTheme(),
-      onGenerateRoute: (RouteSettings settings) {
-        if (settings.name.contains("startup")) {
-          final categoryId =
-          int.parse(settings.name.replaceAll("startup", ""));
-          return FadeInRoute(builder: (context) {
-            return StartupScreen(categoryId);
-          });
-        }
-        if (settings.name.contains("ideas")) {
-          final int ideaId =
-          int.parse(settings.name.replaceAll("ideas", ""));
-          return SlideLeftRoute(builder: (context) {
-            return StartupDetailScreen(id: ideaId,);
-          });
-        }
-        switch (settings.name) {
-          case "/":
-            {
+    
+    _widget() => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: _buildTheme(),
+          onGenerateRoute: (RouteSettings settings) {
+            if (settings.name.contains("startup")) {
+              final categoryId =
+                  int.parse(settings.name.replaceAll("startup", ""));
+              return FadeInRoute(builder: (context) {
+                return StartupScreen(categoryId);
+              });
+            } else if (settings.name.contains("ideas")) {
+              final int ideaId =
+                  int.parse(settings.name.replaceAll("ideas", ""));
+              return SlideLeftRoute(builder: (context) {
+                return StartupDetailScreen(
+                  id: ideaId,
+                );
+              });
+            } else if (settings.name == '/') {
               return MaterialPageRoute(builder: (context) {
                 return HomeScreen();
               });
-            }
-            break;
-          case "/search":
-            {
+            } else if (settings.name == "/search") {
               return FadeInRoute(builder: (context) {
                 return SearchScreen();
               });
+            } else if (settings.name == "/login") {
+              return FadeInRoute(builder: (context) {
+                return LoginRoute();
+              });
             }
-        }
-      },
-    );
+          },
+        );
+
+    return _widget();
   }
 }
 
@@ -72,30 +75,30 @@ IconThemeData _customIconTheme(IconThemeData original) {
 TextTheme _buildTextTheme(TextTheme base) {
   return base
       .copyWith(
-    headline: base.headline.copyWith(
-      fontWeight: FontWeight.w500,
-      fontFamily: 'QuickSand',
-    ),
-    title: base.title.copyWith(fontSize: 18.0),
-    caption: base.caption.copyWith(
-      fontWeight: FontWeight.w400,
-      fontSize: 14.0,
-      fontFamily: 'QuickSand',
-    ),
-    body2: base.body2.copyWith(
-      fontWeight: FontWeight.w500,
-      fontSize: 16.0,
-      fontFamily: 'Raleway',
-    ),
-    button: base.button.copyWith(
-      fontWeight: FontWeight.w500,
-      fontSize: 14.0,
-      fontFamily: 'Raleway',
-    ),
-  )
+        headline: base.headline.copyWith(
+          fontWeight: FontWeight.w500,
+          fontFamily: 'QuickSand',
+        ),
+        title: base.title.copyWith(fontSize: 18.0),
+        caption: base.caption.copyWith(
+          fontWeight: FontWeight.w400,
+          fontSize: 14.0,
+          fontFamily: 'QuickSand',
+        ),
+        body2: base.body2.copyWith(
+          fontWeight: FontWeight.w500,
+          fontSize: 16.0,
+          fontFamily: 'Raleway',
+        ),
+        button: base.button.copyWith(
+          fontWeight: FontWeight.w500,
+          fontSize: 14.0,
+          fontFamily: 'Raleway',
+        ),
+      )
       .apply(
-    fontFamily: 'QuicksSand',
-    //displayColor: Colors.brown.shade900,
-    //bodyColor: Colors.brown.shade900,
-  );
+        fontFamily: 'QuicksSand',
+        //displayColor: Colors.brown.shade900,
+        //bodyColor: Colors.brown.shade900,
+      );
 }
