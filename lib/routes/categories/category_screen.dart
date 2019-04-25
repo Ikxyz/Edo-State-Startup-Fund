@@ -4,8 +4,6 @@ import 'package:eds_funds/classes/startup_category_class.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:eds_funds/widgets/idea_card.dart';
-import 'package:eds_funds/data/data.dart';
-
 class CategoryScreen extends StatefulWidget {
   final Category destination;
   final int id;
@@ -282,7 +280,7 @@ class CategoryDetailScreenState extends State<CategoryScreen>
                 ],
               ),
               Text(
-                widget.destination.description,
+                widget.destination.desc,
                 textAlign: TextAlign.left,
                 style: TextStyle(
                   fontSize: 14.0,

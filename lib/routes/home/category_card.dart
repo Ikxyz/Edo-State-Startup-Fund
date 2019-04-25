@@ -1,4 +1,4 @@
-import 'package:eds_funds/models/category.dart';
+import 'package:eds_funds/classes/category.dart';
 import 'package:eds_funds/utils/constants.dart';
 import 'package:flutter/material.dart';
 

@@ -1,4 +1,5 @@
 import 'package:eds_funds/routes/login/login.dart';
+import 'package:eds_funds/routes/startup/new_startup_screen.dart';
 import 'package:eds_funds/routes/startup/startup_screen.dart';
 import 'package:eds_funds/routes/home/home_screen.dart';
 import 'package:eds_funds/routes/details/startup_detail_screen.dart';
@@ -6,10 +7,11 @@ import 'package:eds_funds/widgets/route_animations.dart';
 import "package:flutter/material.dart";
 import 'package:eds_funds/routes/search/search_screen.dart';
 import 'classes/auth.dart';
+import 'package:eds_funds/models/app.dart';
+import 'trigger/event.dart';
 
 class EDSFunds extends StatelessWidget {
   Widget build(BuildContext context) {
-    
     _widget() => MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: _buildTheme(),
@@ -19,6 +21,10 @@ class EDSFunds extends StatelessWidget {
                   int.parse(settings.name.replaceAll("startup", ""));
               return FadeInRoute(builder: (context) {
                 return StartupScreen(categoryId);
+              });
+            } else if (settings.name == '/addStartup') {
+              return FadeInRoute(builder: (context) {
+                return NewStartupScreen();
               });
             } else if (settings.name.contains("ideas")) {
               final int ideaId =

@@ -1,10 +1,18 @@
 import 'dart:math';
-
-import 'package:eds_funds/models/user.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eds_funds/classes/start_up.dart';
+import 'package:eds_funds/classes/user.dart';
+import 'package:eds_funds/classes/user_profile_class.dart';
 import 'package:eds_funds/routes/startup/new_startup_screen.dart';
 import 'package:eds_funds/widgets/profile_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:eds_funds/trigger/event.dart';
+import 'package:eds_funds/models/app.dart';
+import 'package:eds_funds/classes/classes.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:eds_funds/trigger/event.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -13,7 +21,6 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final user = getProfile();
-
   Widget sampleItem() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -341,10 +348,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            new ProfileHeader(user),
+            new ProfileHeader(),
             new QuickActions(),
             Padding(
-              padding: EdgeInsets.only( left: 8.0, right: 8.0),
+              padding: EdgeInsets.only(left: 8.0, right: 8.0),
               child: Column(
                 children: <Widget>[
                   _buildListItem("Edit Profile", Icons.edit, () {}),
@@ -361,71 +368,83 @@ class _ProfileScreenState extends State<ProfileScreen> {
 }
 
 class ProfileHeader extends StatelessWidget {
-  final User user;
-
-  ProfileHeader(this.user);
-
   @override
   Widget build(BuildContext context) {
     final topPadding = MediaQuery.of(context).padding.top;
     const headerHeight = 200.0;
-    return new Container(
-      height: headerHeight,
-      decoration: new BoxDecoration(
-        color: Colors.blue.shade900,
-      ),
-      child: new Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          new Container(
+    final bloc = $AppAuthState(context);
+    return StreamBuilder(
+        stream: bloc.mapEventToState(isAutheticated.userData),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          UsersProfile user;
+          if (!snapshot.hasData) {
+            return Offstage();
+          }
+
+          if (snapshot.data == null ||
+              snapshot.data.runtimeType != UsersProfile) {
+            user = UsersProfile(
+                firstName: '',
+                lastName: '',
+                city: '',
+                followers: 0,
+                following: 0,
+                likes: 0);
+            return Offstage();
+          }
+
+          user = snapshot.data;
+
+          /// TODO remove this code later
+          user.followers = 0;
+          user.following = 0;
+          user.likes = 0;
+
+          return new Container(
             height: headerHeight,
             decoration: new BoxDecoration(
-              gradient: new LinearGradient(colors: <Color>[
-                Colors.blue.shade900,
-                Colors.blue.shade700,
-              ], stops: <double>[
-                0.3,
-                0.5
-              ], begin: Alignment.topRight, end: Alignment.bottomLeft),
+              color: Colors.blue.shade900,
             ),
-          ),
-          new CustomPaint(
-            painter: new HeaderGradientPainter(),
-          ),
-          new Padding(
-            padding: new EdgeInsets.only(
-                top: topPadding, left: 15.0, right: 15.0, bottom: 20.0),
-            child: new Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: new Stack(
+              fit: StackFit.expand,
               children: <Widget>[
-                new Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0, top: 20.0),
-                  child: _buildAvatar(),
+                new Container(
+                  height: headerHeight,
+                  decoration: new BoxDecoration(
+                    gradient: new LinearGradient(colors: <Color>[
+                      Colors.blue.shade900,
+                      Colors.blue.shade700,
+                    ], stops: <double>[
+                      0.3,
+                      0.5
+                    ], begin: Alignment.topRight, end: Alignment.bottomLeft),
+                  ),
                 ),
-                _buildFollowerStats()
+                new CustomPaint(
+                  painter: new HeaderGradientPainter(),
+                ),
+                new Padding(
+                  padding: new EdgeInsets.only(
+                      top: topPadding, left: 15.0, right: 15.0, bottom: 20.0),
+                  child: new Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      new Padding(
+                        padding: const EdgeInsets.only(bottom: 20.0, top: 20.0),
+                        child: _buildAvatar(user),
+                      ),
+                      _buildFollowerStats(user)
+                    ],
+                  ),
+                ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
+          );
+        });
   }
 
-  Widget _buildAvatar() {
-    final mainTextStyle = new TextStyle(
-      fontFamily: 'QuickSand',
-      color: Colors.white,
-      fontWeight: FontWeight.w700,
-      fontSize: 20.0,
-    );
-    final subTextStyle = new TextStyle(
-      fontFamily: 'QuickSand',
-      fontSize: 16.0,
-      color: Colors.white70,
-      fontWeight: FontWeight.w700,
-    );
-
+  Widget _buildAvatar(UsersProfile user) {
     return new Row(
       children: <Widget>[
         new Container(
@@ -433,7 +452,9 @@ class ProfileHeader extends StatelessWidget {
           height: 60.0,
           decoration: new BoxDecoration(
             image: new DecorationImage(
-                image: new AssetImage("assets/images/cat4.jpg"),
+                image: new NetworkImage(user.passport == null
+                    ? getDefaultImageUrl(user.email)
+                    : user.passport),
                 fit: BoxFit.cover),
             borderRadius: new BorderRadius.all(new Radius.circular(20.0)),
             boxShadow: <BoxShadow>[
@@ -446,24 +467,25 @@ class ProfileHeader extends StatelessWidget {
         new Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            new Text(user.fullName, style: mainTextStyle),
-            new Text(user.location, style: subTextStyle),
+            new Text('${user.lastName} ${user.firstName}',
+                style: mainTextStyle),
+            new Text(user.city != null ? user.city : '', style: subTextStyle),
           ],
         ),
       ],
     );
   }
 
-  Widget _buildFollowerStats() {
+  Widget _buildFollowerStats(UsersProfile user) {
     return new Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        _buildFollowerStat("Followers", user.numberOfFollowersString),
+        _buildFollowerStat("Followers", user.followers.toString()),
         _buildVerticalDivider(),
-        _buildFollowerStat("Following", user.numberFollowingString),
+        _buildFollowerStat("Following", user.following.toString()),
         _buildVerticalDivider(),
-        _buildFollowerStat("Total Likes", user.totalLikesString),
+        _buildFollowerStat("Total Likes", user.likes.toString()),
       ],
     );
   }
@@ -499,73 +521,84 @@ class ProfileHeader extends StatelessWidget {
 class QuickActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final blueGradient = const LinearGradient(colors: const <Color>[
-      const Color(0xFF0075D1),
-      const Color(0xFF00A2E3),
-    ], stops: const <double>[
-      0.4,
-      0.6
-    ], begin: Alignment.topRight, end: Alignment.bottomLeft);
-    final purpleGradient = const LinearGradient(
-        colors: const <Color>[const Color(0xFF882DEB), const Color(0xFF9A4DFF)],
-        stops: const <double>[0.5, 0.7],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight);
-    final redGradient = const LinearGradient(colors: const <Color>[
-      const Color(0xFFBA110E),
-      const Color(0xFFCF3110),
-    ], stops: const <double>[
-      0.6,
-      0.8
-    ], begin: Alignment.bottomRight, end: Alignment.topLeft);
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(left: 30.0, top: 30.0),
+            child: Text(
+              'Startups',
+              style: mainTextStyle.copyWith(color: Colors.black),
+            ),
+          ),
+          new Container(
+              constraints: const BoxConstraints(maxHeight: 120.0),
+              margin: const EdgeInsets.only(top: 20.0),
+              child: new Align(
+                  alignment: Alignment.centerLeft,
+                  child: StreamBuilder(
+                      stream: StartupState$().mapEventToState(startUp.list),
+                      initialData: null,
+                      builder: (BuildContext context, AsyncSnapshot snap) {
+                        QuerySnapshot snapshot = snap.data;
+                        List<Widget> startupList = <Widget>[];
+                        Widget listContainer() {
+                          return new ListView(
+                            shrinkWrap: true,
+                            padding: const EdgeInsets.only(
+                                left: 10.0,
+                                bottom: 20.0,
+                                right: 10.0,
+                                top: 10.0),
+                            scrollDirection: Axis.horizontal,
+                            children: startupList,
+                          );
+                        }
 
-    return new Container(
-      constraints: const BoxConstraints(maxHeight: 120.0),
-      margin: const EdgeInsets.only(top: 20.0),
-      child: new Align(
-        alignment: Alignment.center,
-        child: new ListView(
-          shrinkWrap: true,
-          padding: const EdgeInsets.only(
-              left: 10.0, bottom: 20.0, right: 10.0, top: 10.0),
-          scrollDirection: Axis.horizontal,
-          children: <Widget>[
-            _buildAction("Project\nEcommerce", () {}, Colors.blue, blueGradient,
-                new AssetImage("assets/images/ic_ecommerce.png")),
-            _buildAction("Project\nFintech", () {}, Colors.purple,
-                purpleGradient, new AssetImage("assets/images/ic_fintech.png")),
-            _buildAction("Project\nDesign", () {}, Colors.red, redGradient,
-                new AssetImage("assets/images/ic_design.png")),
-            _buildAction(
-                "Project\nDelivery",
-                () {},
-                Colors.purple,
-                purpleGradient,
-                new AssetImage("assets/images/ic_delivery.png")),
-            _buildAction(
-                "Project\nDevelopment",
-                () {},
-                Colors.blue,
-                blueGradient,
-                new AssetImage("assets/images/ic_development.png")),
-            _buildAction("Project\nInternet", () {}, Colors.red, redGradient,
-                new AssetImage("assets/images/ic_internet.png")),
-          ],
-        ),
-      ),
-    );
+                        startupList.add(_startupItem(
+                            Startup(name: 'Add Startup'), onPressed: () {
+                         Navigator.of(context).pushNamed('/addStartup');
+                        }));
+
+                        if (snapshot.runtimeType == Startup && snap.hasData) {
+                          if (snapshot.documents.length == 0) {
+                            return Offstage();
+                          }
+
+                          snapshot.documents.map((doc) {
+                            final e = Startup.fromJson(doc.data);
+                            startupList
+                                .add(_startupItem(Startup(name: e.name)));
+                            return listContainer();
+                          }).toList();
+
+                          return listContainer();
+                        }
+                        return listContainer();
+                      })))
+        ]);
   }
 
-  Widget _buildAction(String title, VoidCallback action, Color color,
-      Gradient gradient, ImageProvider backgroundImage) {
+  Widget _startupItem(Startup startup,
+      {Function onPressed,
+      Color color: Colors.blue,
+      Gradient gradient,
+      String backgroundImage: "assets/icons/ic_design.png"}) {
+    if (gradient == null) {
+      gradient = blueGradient;
+    }
     final textStyle = new TextStyle(
         color: Colors.white,
         fontWeight: FontWeight.w700,
         fontSize: 18.0,
         fontFamily: 'QuickSand');
-
+    backgroundImage = null;
     return new GestureDetector(
-      onTap: action,
+      onTap: () {
+        if (onPressed == null) return;
+        onPressed();
+      },
       child: new Container(
         margin: const EdgeInsets.only(right: 5.0, left: 5.0),
         width: 150.0,
@@ -583,35 +616,10 @@ class QuickActions extends StatelessWidget {
             gradient: gradient),
         child: new Stack(
           children: <Widget>[
-            new Opacity(
-              opacity: 0.2,
-              child: new Align(
-                alignment: Alignment.centerRight,
-                child: new Transform.rotate(
-                  angle: pi / 4.8,
-                  alignment: Alignment.centerRight,
-                  child: new ClipPath(
-                    clipper: new _BackgroundImageClipper(),
-                    child: new Container(
-                      padding: const EdgeInsets.only(
-                          bottom: 20.0, right: 0.0, left: 60.0),
-                      child: new Image(
-                        width: 90.0,
-                        height: 90.0,
-                        image: backgroundImage != null
-                            ? backgroundImage
-                            : new AssetImage("assets/images/ic_wearable.png"),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ), // END BACKGROUND IMAGE
-
             new Container(
               alignment: Alignment.topLeft,
               padding: const EdgeInsets.only(left: 10.0, top: 10.0),
-              child: new Text(title, style: textStyle),
+              child: new Text(startup.name, style: textStyle),
             ),
           ],
         ),
@@ -643,3 +651,36 @@ class HeaderGradientPainter extends CustomPainter {
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
+
+final mainTextStyle = new TextStyle(
+  fontFamily: 'QuickSand',
+  color: Colors.white,
+  fontWeight: FontWeight.w700,
+  fontSize: 20.0,
+);
+final subTextStyle = new TextStyle(
+  fontFamily: 'QuickSand',
+  fontSize: 16.0,
+  color: Colors.white70,
+  fontWeight: FontWeight.w700,
+);
+final blueGradient = const LinearGradient(colors: const <Color>[
+  const Color(0xFF0075D1),
+  const Color(0xFF00A2E3),
+], stops: const <double>[
+  0.4,
+  0.6
+], begin: Alignment.topRight, end: Alignment.bottomLeft);
+
+final purpleGradient = const LinearGradient(
+    colors: const <Color>[const Color(0xFF882DEB), const Color(0xFF9A4DFF)],
+    stops: const <double>[0.5, 0.7],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight);
+final redGradient = const LinearGradient(colors: const <Color>[
+  const Color(0xFFBA110E),
+  const Color(0xFFCF3110),
+], stops: const <double>[
+  0.6,
+  0.8
+], begin: Alignment.bottomRight, end: Alignment.topLeft);

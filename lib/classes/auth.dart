@@ -1,13 +1,6 @@
-import 'dart:convert';
+import 'package:eds_funds/import.dart';
 
-import 'package:eds_funds/classes/user_profile_class.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:http/http.dart' as http;
-import 'classes.dart';
-
+import  'package:http/http.dart' as http;
 class Auth {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -103,7 +96,7 @@ class Auth {
     }
     try {
       var res = await http.post(
-          'https://us-central1-edostartupfund.cloudfunctions.net/helloWorld',headers: { 
+          'https://us-central1-edostartupfund.cloudfunctions.net/signUp',headers: { 
     'Accept': 'application/json',},
           body: {
             'address': _userProfile.address.toString(),

@@ -1,15 +1,25 @@
 import 'dart:io';
+import 'dart:math';
 import 'dart:ui';
 import 'package:path/path.dart' as $path;
-import 'package:flutter/material.dart';
-// import 'package:timeago/timeago.dart' as timeAgo;
-// import 'package:random_string/random_string.dart' as random;
+import 'package:path_provider/path_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:convert';
+import 'package:eds_funds/import.dart';
 
-//String getID({lenght: 28}) => random.randomAlphaNumeric(lenght);
+
+
+
+String getID({length: 28}) {
+  var rand = new Random();
+  var codeUnits = new List.generate(length, (index) {
+    return rand.nextInt(33) + 89;
+  });
+
+  return new String.fromCharCodes(codeUnits);
+}
 
 /// return an error message if value does not pass the validation
 ///validation requires val: not equal null
@@ -54,6 +64,21 @@ double getWidth(context, {val}) {
 double getHeight(context, {val}) {
   if (val == null) return MediaQuery.of(context).size.height;
   return ((val / 100) * MediaQuery.of(context).size.height);
+}
+
+/// Get default image from avatar API
+String getDefaultImageUrl(email) =>
+    'https://www.gravatar.com/avatar/${getHash(email.toString().trim().toLowerCase())}?s=200&d=identicon';
+
+// Get hash values
+String getHash(data) {
+  if (data == null) return null;
+  var bytes = utf8.encode(data); // data being hashed
+  var hash = sha1.convert(bytes);
+
+  // print("Digest as bytes: ${hash.bytes}");
+  // print("Digest as hex string: $hash");
+  return hash.toString();
 }
 
 /// Navigate to a new route by passing a route widget with a fade animation
@@ -103,7 +128,10 @@ dynamic signInWith({GlobalKey<ScaffoldState> state}) async {
 Future<File> getImage({bool camera: true}) async {
   var image = await ImagePicker.pickImage(
       source: camera ? ImageSource.camera : ImageSource.gallery);
-  return image;
+  Directory tempDir = await getTemporaryDirectory();
+  File tempFile =
+      await image.copy('${tempDir.path}/${getHash(image.path)}.${$path.basename(image.path).split('.')[1]}');
+  return tempFile;
 }
 
 /// Show

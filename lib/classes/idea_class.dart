@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class Idea {
   final String title;
-  final String excerpt;
+  final String desc;
   final String image;
   final String body;
   final String category;
@@ -10,18 +10,29 @@ class Idea {
 
   Idea(
       {this.title,
-      this.excerpt,
+      this.desc,
       this.image,
       this.body,
       this.category,
       this.places});
-  factory Idea.object(Map<String, dynamic> map) {
+  factory Idea.fromJson(Map<String, dynamic> map) {
     return Idea(
         title: map['title'],
         image: map['image'],
         body: map['body'],
         category: map['category'],
-        excerpt: map['excerpt'],
+        desc: map['desc'],
         places: map['places']);
+  }
+
+  static Map<String, dynamic> fromClassObject(Idea idea) {
+    return {
+      'title':idea.title,
+      'desc':idea.desc,
+      'image':idea.image,
+      'body':idea.body,
+      'category':idea.category,
+      'places':idea.places
+    };
   }
 }

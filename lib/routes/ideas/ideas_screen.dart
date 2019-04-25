@@ -40,7 +40,7 @@ class IdeaScreen extends StatelessWidget {
                       Container(
                         margin: EdgeInsets.symmetric(vertical: 10.0),
                         child: Text(
-                          story.excerpt,
+                          story.desc,
                           textAlign: TextAlign.left,
                           style: TextStyle(
                             fontSize: 13.0,

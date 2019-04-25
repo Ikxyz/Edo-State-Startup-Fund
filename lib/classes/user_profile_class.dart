@@ -16,7 +16,7 @@ class UsersProfile {
       identification,
       utilityBill,
       uid;
-  int time;
+  int time,likes,followers,following;
   double latitude, longitude;
   bool isAdmin, isAgent, isMember, isDev, isVerified, isOrg;
   dynamic online;
@@ -42,7 +42,7 @@ class UsersProfile {
       this.utilityBill,
       this.uid,
       this.time,
-      this.online,
+      this.online,this.likes,this.followers,this.following,
       this.isVerified,
       this.latitude,
       this.longitude});
@@ -71,6 +71,7 @@ class UsersProfile {
         utilityBill: map['utility_bill'],
         uid: map['uid'],
         time: map['time'],
+       likes: map['likes'], followers: map['followers'], following: map['following'],
         latitude: map['latitude'],
         longitude: map['longitude'],
         isVerified: map['isVerified'],

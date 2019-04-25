@@ -1,4 +1,4 @@
-import 'package:eds_funds/models/idea.dart';
+import 'idea.dart';
 import 'package:eds_funds/utils/constants.dart';
 
 class Category {
@@ -13,8 +13,7 @@ class Category {
       this.description,
       this.ideas});
 
-  static List<Category> generate() {
-    return [
+   List<Category> get generate=> [
       Category(
         title: "Edu-Tech",
         image: DestinationImages.one,
@@ -58,5 +57,5 @@ class Category {
         ideas:Idea.generate(),
       ),
     ];
-  }
+  
 }

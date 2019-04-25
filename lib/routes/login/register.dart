@@ -35,7 +35,7 @@ class _RegistrationRouteState extends State<RegistrationRoute> {
     var result = await _auth.createAccount(_data);
     print('Result: $result');
 
-    if (result['success'] != true) {
+    if (result['success']) {
      
       Navigator.of(context)
         .pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);

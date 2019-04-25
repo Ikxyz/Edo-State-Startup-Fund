@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:eds_funds/classes/classes.dart';
 import './register.dart';
 import 'package:eds_funds/classes/auth.dart';
+import 'package:eds_funds/models/app.dart';
+import 'package:eds_funds/trigger/event.dart';
 
 class LoginRoute extends StatefulWidget {
   const LoginRoute({Key key}) : super(key: key);
@@ -17,9 +19,13 @@ class _LoginRouteState extends State<LoginRoute>
   String email, pwd;
   final _loginKey = GlobalKey<FormState>();
   final _scafoldState = GlobalKey<ScaffoldState>();
+
+    $AppAuthState _appAuthState ;
+
   @override
   void initState() {
     super.initState();
+    _appAuthState = $AppAuthState(context);
   }
 
   @override
@@ -37,10 +43,11 @@ class _LoginRouteState extends State<LoginRoute>
       print(err);
       showSnackBar(_scafoldState, err.message.toString());
     });
-  if(_user!=null){
+    if (_user != null) {
+      _appAuthState.dispatch(isAutheticated.listen);
       Navigator.of(context)
-        .pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
-  }
+          .pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
+    }
   }
 
   @override
@@ -93,13 +100,14 @@ class _LoginRouteState extends State<LoginRoute>
                   children: <Widget>[
                     TextFormField(
                       style: TextStyle(fontSize: 20),
-                       textInputAction: TextInputAction.done,
-                maxLines: 1,obscureText: false,
-                validator: isEmail,
-                onSaved: (val) {
-                  email = val;
-                },
-                keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.done,
+                      maxLines: 1,
+                      obscureText: false,
+                      validator: isEmail,
+                      onSaved: (val) {
+                        email = val;
+                      },
+                      keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         hintText: 'Email',
                       ),
@@ -109,13 +117,14 @@ class _LoginRouteState extends State<LoginRoute>
                     ),
                     TextFormField(
                       style: loginFormTextStyle,
-                      obscureText: true, textInputAction: TextInputAction.done,
-                maxLines: 1,
-                validator: isPassword,
-                onSaved: (val) {
-                  pwd = val;
-                },
-                keyboardType: TextInputType.text,
+                      obscureText: true,
+                      textInputAction: TextInputAction.done,
+                      maxLines: 1,
+                      validator: isPassword,
+                      onSaved: (val) {
+                        pwd = val;
+                      },
+                      keyboardType: TextInputType.text,
                       decoration: InputDecoration(hintText: 'Password'),
                     ),
                     SizedBox(

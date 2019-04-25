@@ -71,7 +71,7 @@ class IdeaCard extends StatelessWidget {
               Container(
                 margin: EdgeInsets.symmetric(vertical: 10.0),
                 child: Text(
-                  story.excerpt,
+                  story.desc,
                   textAlign: TextAlign.left,
                   maxLines: 5,
                   style: TextStyle(

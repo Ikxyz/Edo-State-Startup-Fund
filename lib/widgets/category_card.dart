@@ -84,7 +84,7 @@ class CategoryCard extends StatelessWidget {
                             ),
                           ),
                           new Text(
-                            category.description,
+                            category.desc,
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               fontSize: 14.0,

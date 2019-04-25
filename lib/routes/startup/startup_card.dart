@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:eds_funds/utils/constants.dart';
-import 'package:eds_funds/models/idea.dart';
+import 'package:eds_funds/utils/constants.dart';import 'package:eds_funds/classes/idea.dart';
 
 class StartupCard extends StatelessWidget {
   const StartupCard({

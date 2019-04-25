@@ -1,4 +1,5 @@
-import 'package:eds_funds/models/category.dart';
+import 'package:eds_funds/classes/category.dart';
+import 'package:eds_funds/routes/home/header.dart';
 import 'package:eds_funds/routes/profile/profile_screen.dart';
 import 'package:eds_funds/routes/home/category_card.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ class ExploreTab extends StatefulWidget {
 
 class ExploreTabState extends State<ExploreTab> with TickerProviderStateMixin {
   final _searchFocusNode = FocusNode();
-  final List<Category> _categories = Category.generate();
+  final List<Category> _categories = Category().generate;
 
   AnimationController controller;
   Animation<double> opacity;
@@ -160,6 +161,9 @@ class ExploreTabState extends State<ExploreTab> with TickerProviderStateMixin {
     );
   }
 
+
+ 
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -174,99 +178,42 @@ class ExploreTabState extends State<ExploreTab> with TickerProviderStateMixin {
             ),
             child: Column(
               children: <Widget>[
-                new Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    new Padding(
-                      padding: const EdgeInsets.only(top: 40.0),
-                      child: Row(
-                        children: <Widget>[
-                          SizedBox(width: 10.0),
-                          new Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                'Hello!!',
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'QuickSand',
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Text(
-                                'Boxerbuzz',
-                                style: TextStyle(
-                                  fontSize: 30.0,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'QuickSand',
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
+                Header()
+                                ],
+                            ),
+                          ),
+                          Positioned(
+                            top: MediaQuery.of(context).size.height * 0.2,
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height * 0.8,
+                            child: Flex(
+                              direction: Axis.vertical,
+                              children: <Widget>[
+                                new Expanded(
+                                  child: PageView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    physics: BouncingScrollPhysics(),
+                                    controller: PageController(viewportFraction: 0.880),
+                                    itemCount: _categories.length,
+                                    itemBuilder: (BuildContext context, int index) {
+                                      Category currentDestination = _categories[index];
+                                      return GestureDetector(
+                                        onTap: () {
+                                          Navigator.pushNamed(context, "startup$index");
+                                        },
+                                        child: CategoryCard(
+                                          category: currentDestination,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                    new Padding(
-                      padding: const EdgeInsets.only(top: 30.0, right: 10.0),
-                      child: InkWell(
-                        child: Container(
-                          height: 50.0,
-                          width: 50.0,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(30)),
-                            color: Colors.blue,
-                            image: DecorationImage(image: AssetImage('assets/images/idea4.png'))
-                          ),
-                        ),
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return ProfileScreen();
-                              },
-                            ),
-                          );
-                        },
-                      ),
-                    )
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            top: MediaQuery.of(context).size.height * 0.2,
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height * 0.8,
-            child: Flex(
-              direction: Axis.vertical,
-              children: <Widget>[
-                new Expanded(
-                  child: PageView.builder(
-                    scrollDirection: Axis.horizontal,
-                    physics: BouncingScrollPhysics(),
-                    controller: PageController(viewportFraction: 0.880),
-                    itemCount: _categories.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      Category currentDestination = _categories[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(context, "startup$index");
-                        },
-                        child: CategoryCard(
-                          category: currentDestination,
-                        ),
-                      );
-                    },
-                  ),
-                )
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+                    );
+                  }
+                }
+                
