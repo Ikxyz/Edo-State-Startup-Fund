@@ -154,9 +154,9 @@ class _NewStartupScreenState extends State<NewStartupScreen> {
       WriteBatch bat, String docKey, List<String> imagesUrl, String hash) {
     bat.setData(_db.collection('startup').document(docKey), {
       'teamLeader': _currentUser.uid.toString(),
-      'teamMembers': _teamMembers.toString(),
+      'teamMembers': _teamMembers,
       'name': _startup.name.toString(),
-      'image': imagesUrl.toString(),
+      'image': imagesUrl,
       'hash': hash.toString(),
       'desc': _startup.desc.toString(),
       'category': _startup.category.toString()

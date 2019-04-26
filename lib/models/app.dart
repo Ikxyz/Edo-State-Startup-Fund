@@ -1,10 +1,6 @@
-import 'package:bloc/bloc.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:eds_funds/trigger/event.dart' as event$;
-import 'package:eds_funds/classes/user_profile_class.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:eds_funds/classes/start_up.dart';
+import 'package:eds_funds/import.dart';
 
 class $AppAuthState extends Bloc<event$.isAutheticated, dynamic> {
   @override
@@ -67,15 +63,13 @@ class StartupState$ extends Bloc<event$.startUp, dynamic> {
   @override
   get initialState => null;
   FirebaseUser _user;
-  final _auth = FirebaseAuth.instance;
   get _startup => Startup();
-  final db = Firestore.instance;
+
+  StartupState$() {}
   @override
-  Stream mapEventToState(event$.startUp event) {
-    return null;
+  Stream<dynamic> mapEventToState(event$.startUp event) async* {
+    
   }
-
-  Stream<List<Startup>> list() async* {}
-
+ 
   Stream<List<Startup>> myList() async* {}
 }

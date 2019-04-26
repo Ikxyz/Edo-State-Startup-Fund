@@ -1,15 +1,10 @@
+import 'dart:math';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eds_funds/import.dart';
 import 'package:eds_funds/classes/start_up.dart';
-import 'package:eds_funds/classes/user.dart';
-import 'package:eds_funds/classes/user_profile_class.dart';
 import 'package:eds_funds/routes/startup/new_startup_screen.dart';
 import 'package:eds_funds/widgets/profile_widget.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:eds_funds/trigger/event.dart';
-import 'package:eds_funds/models/app.dart';
-import 'package:eds_funds/classes/classes.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -17,7 +12,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final user = getProfile();
   Widget sampleItem() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -245,7 +239,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: Icon(
                               Icons.category,
                               size: 20.0,
-                              color: Colors.blue.shade900,
+                              color: Colors.red,
                             ),
                           ),
                           Text(
@@ -255,7 +249,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               fontFamily: 'QuickSand',
                               fontWeight: FontWeight.bold,
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ],
@@ -354,7 +348,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   _buildListItem("Edit Profile", Icons.edit, () {}),
                   _buildListItem("Favourites", Icons.favorite, () {}),
                   _buildListItem("About", Icons.info_outline, () {}),
-                  _buildListItem('Log out', Icons.power_settings_new, () { $AppAuthState(context).dispatch(isAutheticated.signOut);})
+                  _buildListItem('Log out', Icons.power_settings_new, () {
+                    $AppAuthState(context).dispatch(isAutheticated.signOut);
+                  })
                 ],
               ),
             )
@@ -369,7 +365,7 @@ class ProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final topPadding = MediaQuery.of(context).padding.top;
-    const headerHeight = 200.0;
+    const headerHeight = 120.0;
     final bloc = $AppAuthState(context);
     return StreamBuilder(
         stream: bloc.mapEventToState(isAutheticated.userData),
@@ -388,7 +384,7 @@ class ProfileHeader extends StatelessWidget {
                 followers: 0,
                 following: 0,
                 address: null,
-                tel:null,
+                tel: null,
                 likes: 0);
             return Offstage();
           }
@@ -434,7 +430,7 @@ class ProfileHeader extends StatelessWidget {
                         padding: const EdgeInsets.only(bottom: 20.0, top: 20.0),
                         child: _buildAvatar(user),
                       ),
-                      _buildFollowerStats(user)
+                   //   _buildFollowerStats(user)
                     ],
                   ),
                 ),
@@ -476,19 +472,19 @@ class ProfileHeader extends StatelessWidget {
     );
   }
 
-  Widget _buildFollowerStats(UsersProfile user) {
-    return new Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        _buildFollowerStat("Followers", user.followers.toString()),
-        _buildVerticalDivider(),
-        _buildFollowerStat("Following", user.following.toString()),
-        _buildVerticalDivider(),
-        _buildFollowerStat("Total Likes", user.likes.toString()),
-      ],
-    );
-  }
+  // Widget _buildFollowerStats(UsersProfile user) {
+  //   return new Row(
+  //     mainAxisAlignment: MainAxisAlignment.center,
+  //     crossAxisAlignment: CrossAxisAlignment.center,
+  //     children: <Widget>[
+  //       _buildFollowerStat("Followers", user.followers.toString()),
+  //       _buildVerticalDivider(),
+  //       _buildFollowerStat("Following", user.following.toString()),
+  //       _buildVerticalDivider(),
+  //       _buildFollowerStat("Total Likes", user.likes.toString()),
+  //     ],
+  //   );
+  // }
 
   Widget _buildFollowerStat(String title, String value) {
     final titleStyle = new TextStyle(
@@ -525,58 +521,94 @@ class QuickActions extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(left: 30.0, top: 30.0),
-            child: Text(
-              'Startups',
-              style: mainTextStyle.copyWith(color: Colors.black),
+          FlatButton.icon(
+            onPressed: () {
+              Navigator.of(context).pushNamed('/addStartup');
+            },
+            icon: Icon(Icons.add),
+            label: Text(
+              'Add Startups',
+              style: mainTextStyle.copyWith(
+                  color: Theme.of(context).indicatorColor),
             ),
+            textColor: Theme.of(context).indicatorColor,
+            shape: StadiumBorder(),
+            textTheme: ButtonTextTheme.primary,
+            padding: const EdgeInsets.all(15.0),
           ),
           new Container(
               constraints: const BoxConstraints(maxHeight: 120.0),
               margin: const EdgeInsets.only(top: 20.0),
               child: new Align(
-                  alignment: Alignment.centerLeft,
-                  child: StreamBuilder(
-                      stream: StartupState$().mapEventToState(startUp.list),
-                      initialData: null,
-                      builder: (BuildContext context, AsyncSnapshot snap) {
-                        QuerySnapshot snapshot = snap.data;
-                        List<Widget> startupList = <Widget>[];
-                        Widget listContainer() {
-                          return new ListView(
-                            shrinkWrap: true,
-                            padding: const EdgeInsets.only(
-                                left: 10.0,
-                                bottom: 20.0,
-                                right: 10.0,
-                                top: 10.0),
-                            scrollDirection: Axis.horizontal,
-                            children: startupList,
-                          );
-                        }
-
-                        startupList.add(_startupItem(
-                            Startup(name: 'Add Startup'), onPressed: () {
-                          Navigator.of(context).pushNamed('/addStartup');
-                        }));
-
-                        if (snapshot.runtimeType == Startup && snap.hasData) {
-                          if (snapshot.documents.length == 0) {
-                            return Offstage();
-                          }
-
-                          snapshot.documents.map((doc) {
-                            final e = Startup.fromJson(doc.data);
-                            startupList
-                                .add(_startupItem(Startup(name: e.name)));
-                            return listContainer();
-                          }).toList();
-
-                          return listContainer();
-                        }
-                        return listContainer();
-                      })))
+                alignment: Alignment.centerLeft,
+                child: FutureBuilder(
+                  future: FirebaseAuth.instance.currentUser(),
+                  builder: (context, futuerData) {
+                    if (futuerData.hasData) {
+                      if (futuerData.data != null) {
+                        return StreamBuilder(
+                          stream: db
+                              .collection('user')
+                              .document(futuerData.data.uid)
+                              .collection('startup')
+                              .snapshots(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<QuerySnapshot> snap) {
+                            if (snap.connectionState ==
+                                    ConnectionState.active ||
+                                snap.connectionState == ConnectionState.done) {
+                              return ListView(
+                                shrinkWrap: true,
+                                padding: const EdgeInsets.only(
+                                    left: 10.0,
+                                    bottom: 20.0,
+                                    right: 10.0,
+                                    top: 10.0),
+                                scrollDirection: Axis.horizontal,
+                                children: snap.data.documentChanges
+                                    .map((docSnapshot) {
+                                  // Startup startup = Startup.fromJson(
+                                  //     Map<String, dynamic>.from(
+                                  //         docSnapshot.document.data));
+                                  return FutureBuilder(
+                                    future: db
+                                        .collection('startup')
+                                        .document(
+                                            docSnapshot.document.data['id'])
+                                        .get(),
+                                    builder: (context,
+                                        AsyncSnapshot<DocumentSnapshot>
+                                            startupSnapshot) {
+                                      if (startupSnapshot.hasData) {
+                                        if (startupSnapshot.data.exists &&
+                                            startupSnapshot.data.data != null) {
+                                          final startup = Startup.fromJson(
+                                              Map<String, dynamic>.from(
+                                                  startupSnapshot.data.data));
+                                          return _startupItem(startup);
+                                        }
+                                      }
+                                      return Offstage();
+                                    },
+                                  );
+                                }).toList(),
+                              );
+                            }
+                            return Container(
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }
+                    }
+                    return Offstage();
+                  },
+                ),
+              ))
         ]);
   }
 
@@ -592,8 +624,8 @@ class QuickActions extends StatelessWidget {
         color: Colors.white,
         fontWeight: FontWeight.w700,
         fontSize: 18.0,
-        fontFamily: 'QuickSand');
-    backgroundImage = null;
+        fontFamily: 'QuickSand'); 
+    backgroundImage =  startup.image[Random.secure().nextInt(3)];
     return new GestureDetector(
       onTap: () {
         if (onPressed == null) return;
@@ -613,7 +645,7 @@ class QuickActions extends StatelessWidget {
                   spreadRadius: 1.0,
                   offset: new Offset(0.0, 1.0)),
             ],
-            gradient: gradient),
+            image: DecorationImage(image: NetworkImage(backgroundImage),fit: BoxFit.cover)),
         child: new Stack(
           children: <Widget>[
             new Container(
@@ -645,8 +677,7 @@ class _BackgroundImageClipper extends CustomClipper<Path> {
 
 class HeaderGradientPainter extends CustomPainter {
   @override
-  void paint(Canvas canvas, Size size) {
-  }
+  void paint(Canvas canvas, Size size) {}
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

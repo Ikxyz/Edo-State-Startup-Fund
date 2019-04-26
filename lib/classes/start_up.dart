@@ -2,11 +2,11 @@ import 'package:eds_funds/classes/idea_class.dart';
 
 class Startup {
     String name, teamLeader, stage, status, desc,category,hash;
-    List<String> image;
+    List<dynamic> image;
     double fundRaised, softCap, hardCap;
     int temperature;
-    List<Idea> ideas;
-    List<String> teamMembers;
+    List<dynamic> ideas;
+    List<dynamic> teamMembers;
 
   Startup(
       {this.teamLeader,
@@ -27,7 +27,7 @@ class Startup {
     return Startup(
         ideas: map['ideas'],
         desc: map['desc'],
-        image: map['map'],
+        image: map['image'],
         stage: map['stage'],
         status: map['status'],
         teamLeader: map['teamLeader'],
@@ -41,7 +41,7 @@ class Startup {
         temperature: map['temperature']);
   }
 
-  static Map<String, dynamic> fromClassToJson(Startup e) {
+  static Map<String, dynamic> toJson(Startup e) {
     return {
       'teamLeader': e.teamLeader,
       'stage': e.stage,

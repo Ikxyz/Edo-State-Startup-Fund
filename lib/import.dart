@@ -22,3 +22,16 @@ export 'package:flutter/material.dart';
 export 'package:flutter/services.dart';
 export 'package:google_sign_in/google_sign_in.dart';
 export 'package:cloud_firestore/cloud_firestore.dart';
+export 'package:bloc/bloc.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+final auth = FirebaseAuth.instance;
+final db = Firestore.instance;
+FirebaseUser firebaseUser;
+final never = auth.onAuthStateChanged.listen((x) {
+  firebaseUser = x;
+});
+FirebaseUser get userAuth => firebaseUser;
+ 
