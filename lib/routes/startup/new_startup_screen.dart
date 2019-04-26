@@ -1,9 +1,8 @@
 import 'dart:io';
-
+import 'package:path/path.dart' as $path;
 import 'package:eds_funds/widgets/text_header.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:eds_funds/import.dart';
-
 import 'package:http/http.dart' as http;
 
 class NewStartupScreen extends StatefulWidget {
@@ -11,18 +10,25 @@ class NewStartupScreen extends StatefulWidget {
   _NewStartupScreenState createState() => _NewStartupScreenState();
 }
 
+final _db = Firestore.instance;
+
 class _NewStartupScreenState extends State<NewStartupScreen> {
+  NewStartupScreen() {
+    _db.settings(persistenceEnabled: true);
+  }
+
+  var _isWorking = false;
   final _formKey = GlobalKey<FormState>();
   final _scafoldKey = GlobalKey<ScaffoldState>();
   final _teamMemberFormKey = GlobalKey<FormState>();
-  final _db = Firestore.instance;
+
   final _category = Category();
   final _startup = Startup();
   FirebaseUser _currentUser;
   final _newMemberProfile =
       UsersProfile(address: null, firstName: null, lastName: null, tel: null);
 
-  List<Map<String,dynamic>> _images = [];
+  List<Map<String, dynamic>> _images = [];
   List<String> _teamMembers = [];
 
   final _teamMemberTextController = TextEditingController();
@@ -65,46 +71,99 @@ class _NewStartupScreenState extends State<NewStartupScreen> {
         showSnackBar(_scafoldKey, 'Already added this members');
         return print('Already added this members');
       }
-      ;
 
       _teamMembers.add(pull['uid']);
       _teamMemberTextController.clear();
     });
   }
 
-  void _addStartup() {
+  void _progress(bool e) {
+    setState(() {
+      _isWorking = e;
+    });
+  }
+
+  Future _addStartup() async {
+    _progress(true);
+    // Validate form data
     if (!_formKey.currentState.validate()) {
+      _progress(false);
       return showSnackBar(_scafoldKey, 'Fill in feilds to continue');
     } else if (_images.length < 3) {
+      _progress(false);
       return showSnackBar(_scafoldKey, 'Minimue of three images is required');
     } else if (_teamMembers.length < 2) {
+      _progress(false);
       return showSnackBar(
           _scafoldKey, 'Minimue of three two members is required');
     }
 
+// save form data
     _formKey.currentState.save();
 
+// add team leader to the list of members
+    _addTeamLeaderToMemberList();
+
+//Initialize data for upload
     final bat = _db.batch();
-    final docKey = getID();
     final timeStamp = DateTime.now().toUtc();
     final hash = getHash(
-        '${_teamMembers.join()}${timeStamp}${_startup.name}${_startup.teamLeader}');
+        '${_teamMembers.join()}$timeStamp${_startup.name}${_startup.teamLeader}');
+    final docKey = getID();
+    final List<String> imagesUrl = [];
 
-    final imagesUrl = _images.map((e) async {
-      final url = await uploadFile(e['file'], 'startups');
-      return url;
-    }).toList();
-
-    bat.setData(_db.collection('startup').document(docKey), {
-      'teamLeader': _currentUser.uid,
-      'teamMembers': _teamMembers,
-      'name': _startup.name,
-      'image': imagesUrl,
-      'desc': _startup.desc,
-      'category': _startup.category
+    await Future.forEach(_images, (a) async {
+      try {
+        final url = await _uploadStartupImage(a);
+        imagesUrl.add(url);
+      } on Exception catch (e) {
+         print(e);
+        _progress(false);
+      }
     });
+
+// add new startup data to Bacth
+    try {
+      _addDataToBacth(bat, docKey, imagesUrl, hash);
+    } on Exception catch (e) {
+      print(e);
+      _progress(false);
+    }
+
+    try {
+      await _commitStartupToDatabase(bat);
+    } on Exception catch (e) {
+       print(e);
+      _progress(false);
+    }
+    _progress(false);
+  }
+
+  Future<String> _uploadStartupImage(Map<String, dynamic> e) async {
+    final url = await uploadFile(e['file'], $path.basename(e['file'].path));
+    return url;
+  }
+
+  Future _commitStartupToDatabase(WriteBatch bat) async {
+    await bat.commit();
+    showSnackBar(_scafoldKey, 'Success');
+    Navigator.of(context).pop();
+  }
+
+  void _addDataToBacth(
+      WriteBatch bat, String docKey, List<String> imagesUrl, String hash) {
+    bat.setData(_db.collection('startup').document(docKey), {
+      'teamLeader': _currentUser.uid.toString(),
+      'teamMembers': _teamMembers.toString(),
+      'name': _startup.name.toString(),
+      'image': imagesUrl.toString(),
+      'hash': hash.toString(),
+      'desc': _startup.desc.toString(),
+      'category': _startup.category.toString()
+    });
+    //add startup docKey to all team members
     _teamMembers.forEach((e) {
-      bat.updateData(
+      bat.setData(
           _db
               .collection('user')
               .document(e)
@@ -112,11 +171,25 @@ class _NewStartupScreenState extends State<NewStartupScreen> {
               .document(docKey),
           {'id': docKey});
     });
+    print(imagesUrl);
+    print({
+      'teamLeader': _currentUser.uid.toString(),
+      'teamMembers': _teamMembers.toString(),
+      'name': _startup.name.toString(),
+      'image': imagesUrl.toString(),
+      'hash': hash.toString(),
+      'desc': _startup.desc.toString(),
+      'category': _startup.category.toString()
+    });
+  }
+
+  void _addTeamLeaderToMemberList() {
+    _teamMembers.add(_currentUser.uid.toString());
   }
 
   Future<String> _getTeamMemberImage(String uid) async {
     if (uid == null) return getDefaultImageUrl('default');
-    final e = await Firestore.instance.collection('user').document(uid).get();
+    final e = await _db.collection('user').document(uid).get();
     if (e.exists) {
       UsersProfile _profile = UsersProfile.toObject(e.data);
       print('Profile found ${e.data}');
@@ -134,6 +207,9 @@ class _NewStartupScreenState extends State<NewStartupScreen> {
       child: TextFormField(
         textInputAction: TextInputAction.next,
         keyboardType: TextInputType.text,
+        onSaved: (val) {
+          _startup.name = val;
+        },
         textCapitalization: TextCapitalization.words,
         decoration: const InputDecoration(
           isDense: true,
@@ -154,6 +230,9 @@ class _NewStartupScreenState extends State<NewStartupScreen> {
         textCapitalization: TextCapitalization.words,
         maxLength: 260,
         maxLines: 5,
+        onSaved: (val) {
+          _startup.desc = val;
+        },
         autocorrect: true,
         decoration: const InputDecoration(
           filled: true,
@@ -215,13 +294,28 @@ class _NewStartupScreenState extends State<NewStartupScreen> {
           },
         ),
         actions: <Widget>[
-          CupertinoButton(
-            child: Icon(
-              Icons.check,
-              color: Colors.white,
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: Visibility(
+              visible: _isWorking,
+              child: Center(
+                  child: SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation(Colors.white),
+                  strokeWidth: 2,
+                ),
+              )),
+              replacement: CupertinoButton(
+                child: Icon(
+                  Icons.check,
+                  color: Colors.white,
+                ),
+                onPressed: _addStartup,
+              ),
             ),
-            onPressed: _addStartup,
-          )
+          ),
         ],
       ),
       body: SingleChildScrollView(

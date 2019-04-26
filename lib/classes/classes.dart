@@ -9,16 +9,15 @@ import 'package:crypto/crypto.dart';
 import 'dart:convert';
 import 'package:eds_funds/import.dart';
 
-
-
-
 String getID({length: 28}) {
-  var rand = new Random();
-  var codeUnits = new List.generate(length, (index) {
-    return rand.nextInt(33) + 89;
-  });
-
-  return new String.fromCharCodes(codeUnits);
+  const chars =
+      "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  Random rnd = new Random(new DateTime.now().millisecondsSinceEpoch);
+  String result = "";
+  for (var i = 0; i < length; i++) {
+    result += chars[rnd.nextInt(chars.length)];
+  }
+  return result;
 }
 
 /// return an error message if value does not pass the validation
@@ -129,8 +128,8 @@ Future<File> getImage({bool camera: true}) async {
   var image = await ImagePicker.pickImage(
       source: camera ? ImageSource.camera : ImageSource.gallery);
   Directory tempDir = await getTemporaryDirectory();
-  File tempFile =
-      await image.copy('${tempDir.path}/${getHash(image.path)}.${$path.basename(image.path).split('.')[1]}');
+  File tempFile = await image.copy(
+      '${tempDir.path}/${getHash(image.path)}.${$path.basename(image.path).split('.')[1]}');
   return tempFile;
 }
 
@@ -158,12 +157,15 @@ Future<dynamic> uploadFile(File file, String fileName,
   final String fileExt = $path.basename(file.path).split('.')[1];
   final StorageReference _ref =
       FirebaseStorage().ref().child(location).child('$fileName.$fileExt');
-  final upload = await _ref.putFile(file);
+  final upload = _ref.putFile(file);
   bool ok = await upload.events.any((eve) {
     if (eve.type == StorageTaskEventType.success) return true;
     return false;
   });
-  if (ok) return await upload.lastSnapshot.ref.getDownloadURL();
+  if (ok) {
+    final url = await upload.lastSnapshot.ref.getDownloadURL();
+    return url;
+  }
   return null;
 }
 

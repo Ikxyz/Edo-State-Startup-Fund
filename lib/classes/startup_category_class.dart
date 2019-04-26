@@ -1,5 +1,4 @@
 import 'package:eds_funds/classes/idea_class.dart';
-import 'package:flutter/material.dart';
 
 class Category {
   final String title, teamLeader, stage, status, desc;

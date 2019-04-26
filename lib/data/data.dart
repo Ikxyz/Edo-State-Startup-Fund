@@ -1,8 +1,6 @@
 import 'package:eds_funds/classes/idea_class.dart';
 import 'package:eds_funds/classes/startup_category_class.dart';
 import 'package:eds_funds/utils/constants.dart';
-import 'package:flutter/material.dart';
-import 'package:eds_funds/classes/classes.dart';
 
 List<Idea> generateIdeaData() {
   return [

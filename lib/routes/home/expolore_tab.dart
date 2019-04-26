@@ -1,6 +1,5 @@
 import 'package:eds_funds/classes/category.dart';
 import 'package:eds_funds/routes/home/header.dart';
-import 'package:eds_funds/routes/profile/profile_screen.dart';
 import 'package:eds_funds/routes/home/category_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';

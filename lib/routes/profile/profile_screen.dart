@@ -1,18 +1,15 @@
-import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eds_funds/classes/start_up.dart';
 import 'package:eds_funds/classes/user.dart';
 import 'package:eds_funds/classes/user_profile_class.dart';
 import 'package:eds_funds/routes/startup/new_startup_screen.dart';
 import 'package:eds_funds/widgets/profile_widget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:eds_funds/trigger/event.dart';
 import 'package:eds_funds/models/app.dart';
 import 'package:eds_funds/classes/classes.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:eds_funds/trigger/event.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -357,6 +354,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   _buildListItem("Edit Profile", Icons.edit, () {}),
                   _buildListItem("Favourites", Icons.favorite, () {}),
                   _buildListItem("About", Icons.info_outline, () {}),
+                  _buildListItem('Log out', Icons.power_settings_new, () { $AppAuthState(context).dispatch(isAutheticated.signOut);})
                 ],
               ),
             )
@@ -389,6 +387,8 @@ class ProfileHeader extends StatelessWidget {
                 city: '',
                 followers: 0,
                 following: 0,
+                address: null,
+                tel:null,
                 likes: 0);
             return Offstage();
           }
@@ -558,7 +558,7 @@ class QuickActions extends StatelessWidget {
 
                         startupList.add(_startupItem(
                             Startup(name: 'Add Startup'), onPressed: () {
-                         Navigator.of(context).pushNamed('/addStartup');
+                          Navigator.of(context).pushNamed('/addStartup');
                         }));
 
                         if (snapshot.runtimeType == Startup && snap.hasData) {
@@ -646,7 +646,6 @@ class _BackgroundImageClipper extends CustomClipper<Path> {
 class HeaderGradientPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    // TODO: paint background radial gradient
   }
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => false;

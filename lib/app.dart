@@ -6,9 +6,6 @@ import 'package:eds_funds/routes/details/startup_detail_screen.dart';
 import 'package:eds_funds/widgets/route_animations.dart';
 import "package:flutter/material.dart";
 import 'package:eds_funds/routes/search/search_screen.dart';
-import 'classes/auth.dart';
-import 'package:eds_funds/models/app.dart';
-import 'trigger/event.dart';
 
 class EDSFunds extends StatelessWidget {
   Widget build(BuildContext context) {

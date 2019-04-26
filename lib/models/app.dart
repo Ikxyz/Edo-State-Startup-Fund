@@ -6,23 +6,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:eds_funds/classes/start_up.dart';
 
-
 class $AppAuthState extends Bloc<event$.isAutheticated, dynamic> {
   @override
   dynamic get initialState => false;
   final BuildContext context;
   FirebaseUser _user;
   final _auth = FirebaseAuth.instance;
-  $AppAuthState(this.context) {
-
- 
-  }
-
+  $AppAuthState(this.context);
   @override
   Stream<dynamic> mapEventToState(event$.isAutheticated event) async* {
-  
-
-    _user = await FirebaseAuth.instance.currentUser();  print('Trigger: ${event}; USER $_user');
+    _user = await FirebaseAuth.instance.currentUser();
+    print('Trigger: $event; USER $_user');
     // if (_user == null) {
     //   Navigator.of(context)
     //       .pushNamedAndRemoveUntil('login', (Route<dynamic> route) => false);
