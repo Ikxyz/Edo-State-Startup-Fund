@@ -171,16 +171,7 @@ class _NewStartupScreenState extends State<NewStartupScreen> {
               .document(docKey),
           {'id': docKey});
     });
-    print(imagesUrl);
-    print({
-      'teamLeader': _currentUser.uid.toString(),
-      'teamMembers': _teamMembers.toString(),
-      'name': _startup.name.toString(),
-      'image': imagesUrl.toString(),
-      'hash': hash.toString(),
-      'desc': _startup.desc.toString(),
-      'category': _startup.category.toString()
-    });
+ 
   }
 
   void _addTeamLeaderToMemberList() {
@@ -227,7 +218,7 @@ class _NewStartupScreenState extends State<NewStartupScreen> {
       child: TextFormField(
         textInputAction: TextInputAction.next,
         keyboardType: TextInputType.text,
-        textCapitalization: TextCapitalization.words,
+        textCapitalization: TextCapitalization.sentences,
         maxLength: 260,
         maxLines: 5,
         onSaved: (val) {
