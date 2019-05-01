@@ -1,4 +1,3 @@
-import 'package:eds_funds/classes/idea_class.dart';
 import 'package:eds_funds/utils/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +8,7 @@ class IdeaScreen extends StatelessWidget {
   IdeaScreen({Key key, @required this.id}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    final story = generateIdeaData().first;
+    final story = generateStartupData()[0];
     return new Material(
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -27,7 +26,7 @@ class IdeaScreen extends StatelessWidget {
                         width: MediaQuery.of(context).size.width,
                         padding: EdgeInsets.only(top: 40.0),
                         child: Text(
-                          story.title,
+                          story.name,
                           textAlign: TextAlign.left,
                           style: TextStyle(
                             color: AppColors.boldText,
@@ -58,7 +57,7 @@ class IdeaScreen extends StatelessWidget {
                           borderRadius: BorderRadius.all(Radius.circular(8.0)),
                           image: DecorationImage(
                             fit: BoxFit.cover,
-                            image: AssetImage(story.image),
+                            image: NetworkImage(story.image[0]),
                           ),
                         ),
                         margin: EdgeInsets.symmetric(vertical: 10.0),

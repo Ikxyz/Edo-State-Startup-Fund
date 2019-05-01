@@ -582,7 +582,7 @@ class QuickActions extends StatelessWidget {
                                       if (startupSnapshot.hasData) {
                                         if (startupSnapshot.data.exists &&
                                             startupSnapshot.data.data != null) {
-                                          final startup = Startup.fromJson(
+                                          final startup = StartupClass.fromJson(
                                               Map<String, dynamic>.from(
                                                   startupSnapshot.data.data));
                                           return _startupItem(startup);
@@ -612,7 +612,7 @@ class QuickActions extends StatelessWidget {
         ]);
   }
 
-  Widget _startupItem(Startup startup,
+  Widget _startupItem(StartupClass startup,
       {Function onPressed,
       Color color: Colors.blue,
       Gradient gradient,

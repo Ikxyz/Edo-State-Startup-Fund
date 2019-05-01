@@ -1,4 +1,4 @@
-import 'package:eds_funds/classes/startup_category_class.dart';
+import 'package:eds_funds/classes/start_up.dart';
 import 'package:eds_funds/utils/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +8,7 @@ class CategoryCard extends StatelessWidget {
     @required this.category,
   }) : super(key: key);
 
-  final Category category;
+  final StartupClass category;
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +36,12 @@ class CategoryCard extends StatelessWidget {
             Expanded(
               flex: 2,
               child: Hero(
-                tag: "${category.title}_bg",
+                tag: "${category.name}_bg",
                 child: Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: AssetImage(category.image),
+                      image: AssetImage(category.image[0]),
                     ),
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(12.0),
@@ -71,7 +71,7 @@ class CategoryCard extends StatelessWidget {
                             child: Row(
                               children: <Widget>[
                                 Text(
-                                  category.title,
+                                  category.name,
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     color: AppColors.boldText,

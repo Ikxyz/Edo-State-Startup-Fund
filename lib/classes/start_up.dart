@@ -1,14 +1,15 @@
-import 'package:eds_funds/classes/idea_class.dart';
+ 
 
-class Startup {
-    String name, teamLeader, stage, status, desc,category,hash;
+class StartupClass {
+    String name, teamLeader, stage, status, desc,category,hash,body;
     List<dynamic> image;
+
     double fundRaised, softCap, hardCap;
     int temperature;
     List<dynamic> ideas;
     List<dynamic> teamMembers;
 
-  Startup(
+  StartupClass(
       {this.teamLeader,
       this.stage,this.category,
       this.status,
@@ -20,13 +21,15 @@ class Startup {
       this.image,
       this.desc,
       this.hash,
+      this.body,
       this.temperature,
       this.ideas});
 
-  factory Startup.fromJson(Map<String, dynamic> map) {
-    return Startup(
+  factory StartupClass.fromJson(Map<String, dynamic> map) {
+    return StartupClass(
         ideas: map['ideas'],
         desc: map['desc'],
+        body: map['body'],
         image: map['image'],
         stage: map['stage'],
         status: map['status'],
@@ -41,7 +44,7 @@ class Startup {
         temperature: map['temperature']);
   }
 
-  static Map<String, dynamic> toJson(Startup e) {
+  static Map<String, dynamic> toJson(StartupClass e) {
     return {
       'teamLeader': e.teamLeader,
       'stage': e.stage,
@@ -50,6 +53,7 @@ class Startup {
       'name': e.name,
       'image': e.image,
       'desc': e.desc,
+      'body': e.body,
       'fundRaised': e.fundRaised,
       'temperature': e.temperature,
       'ideas': e.ideas,

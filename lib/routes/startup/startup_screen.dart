@@ -1,14 +1,18 @@
 import 'dart:async';
+import 'package:eds_funds/import.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';import 'package:eds_funds/classes/category.dart';import 'package:eds_funds/classes/idea.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:eds_funds/classes/category.dart';
 import 'package:eds_funds/routes/startup/startup_card.dart';
 
 class StartupScreen extends StatefulWidget {
-  final Category category;
+  Category category;
   final int id;
 
-  StartupScreen(this.id) : category = Category().generate[id];
-
+  StartupScreen(this.id) {
+    category = Category().generate[id];
+    print('Category: $category');
+  }
   @override
   CategoryDetailScreenState createState() {
     return new CategoryDetailScreenState();
@@ -219,23 +223,53 @@ class CategoryDetailScreenState extends State<StartupScreen>
     );
   }
 
+// TODO: populate with online data
   Widget buildListView() {
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      padding: EdgeInsets.only(left: 16.0),
-      itemCount: widget.category.ideas.length,
-      controller: ScrollController(initialScrollOffset: 20.0),
-      itemBuilder: (BuildContext context, int index) {
-        final Idea story = widget.category.ideas[index];
-        return GestureDetector(
-          onTap: () => Navigator.pushNamed(context, "ideas$index"),
-          child: Container(
-            height: 400.0,
-            padding: EdgeInsets.fromLTRB(0.0, 0.0, 5.0, 20.0),
-            child: StartupCard(story: story),
-          ),
-        );
-      },
+    return Container(
+      child: StreamBuilder(
+        stream: db
+            .collection('startup')
+            .where('category', isEqualTo: widget.category.title)
+            .limit(20)
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasData) {
+           return ListView(
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.only(left: 16.0),
+              controller: ScrollController(initialScrollOffset: 20.0),
+              children: snapshot.data.documentChanges.map((docSnapshot) {
+                final _doc = docSnapshot.document;
+                final _startup = StartupClass.fromJson(_doc.data);
+                return GestureDetector(
+                  onTap: () => Navigator.pushNamed(
+                      context, "startupInfo/${_doc.documentID}"),
+                  child: Container(
+                    height: 400.0,
+                    padding: EdgeInsets.fromLTRB(0.0, 0.0, 5.0, 20.0),
+                    child: StartupCard(_startup),
+                  ),
+                );
+              }).toList(),
+            );
+          }
+          if (snapshot.hasError) {
+            return Container(
+              child: Center(
+                child: Text('${snapshot.error.toString()}'),
+              ),
+            );
+          }
+          return Container(
+            child: Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation(Colors.white),
+                strokeWidth: 2,
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 

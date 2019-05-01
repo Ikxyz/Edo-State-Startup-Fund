@@ -23,7 +23,7 @@ class _NewStartupScreenState extends State<NewStartupScreen> {
   final _teamMemberFormKey = GlobalKey<FormState>();
 
   final _category = Category();
-  final _startup = Startup();
+  final _startup = StartupClass();
   FirebaseUser _currentUser;
   final _newMemberProfile =
       UsersProfile(address: null, firstName: null, lastName: null, tel: null);

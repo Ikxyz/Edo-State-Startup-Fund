@@ -1,14 +1,16 @@
 import 'dart:async';
-import 'package:eds_funds/classes/idea_class.dart';
-import 'package:eds_funds/classes/startup_category_class.dart';
+ 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:eds_funds/import.dart';
 import 'package:eds_funds/widgets/idea_card.dart';
-class CategoryScreen extends StatefulWidget {
-  final Category destination;
-  final int id;
 
-  CategoryScreen(this.id) : destination = Category();
+class CategoryScreen extends StatefulWidget {
+  int id;
+  Category destination;
+  CategoryScreen(id) {
+    destination = Category().generate[id];
+  }
 
   @override
   CategoryDetailScreenState createState() {
@@ -221,21 +223,32 @@ class CategoryDetailScreenState extends State<CategoryScreen>
   }
 
   Widget buildListView() {
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      padding: EdgeInsets.only(left: 16.0),
-      itemCount: widget.destination.ideas.length,
-      // controller: ScrollController(initialScrollOffset: 20.0),
-      itemBuilder: (BuildContext context, int index) {
-        final Idea story = widget.destination.ideas[index];
-        return GestureDetector(
-          onTap: () => Navigator.pushNamed(context, "ideas$index"),
-          child: Container(
-            height: 400.0,
-            padding: EdgeInsets.fromLTRB(0.0, 0.0, 5.0, 20.0),
-            child: IdeaCard(story: story),
-          ),
-        );
+    return StreamBuilder(
+      stream: db
+          .collection('startup')
+          .where('category', isEqualTo: widget.destination.title)
+          .snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapShot) {
+        if (snapShot.hasData) {
+          if (snapShot.data.documentChanges.length > 0) {
+            return ListView(
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.only(left: 16.0),
+              // controller: ScrollController(initialScrollOffset: 20.0),
+              children: snapShot.data.documentChanges.map((docSnapshot) {
+                return GestureDetector(
+                  onTap: () => Navigator.pushNamed(
+                      context, "ideas/${docSnapshot.document.documentID}"),
+                  child: Container(
+                    height: 400.0,
+                    padding: EdgeInsets.fromLTRB(0.0, 0.0, 5.0, 20.0),
+                    child: StartDetails(),
+                  ),
+                );
+              }).toList(),
+            );
+          }
+        }
       },
     );
   }
@@ -280,7 +293,7 @@ class CategoryDetailScreenState extends State<CategoryScreen>
                 ],
               ),
               Text(
-                widget.destination.desc,
+                widget.destination.description,
                 textAlign: TextAlign.left,
                 style: TextStyle(
                   fontSize: 14.0,

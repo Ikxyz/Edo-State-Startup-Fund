@@ -160,9 +160,6 @@ class ExploreTabState extends State<ExploreTab> with TickerProviderStateMixin {
     );
   }
 
-
- 
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -176,43 +173,40 @@ class ExploreTabState extends State<ExploreTab> with TickerProviderStateMixin {
               color: Colors.blue.shade900,
             ),
             child: Column(
+              children: <Widget>[Header()],
+            ),
+          ),
+          Positioned(
+            top: MediaQuery.of(context).size.height * 0.2,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height * 0.8,
+            child: Flex(
+              direction: Axis.vertical,
               children: <Widget>[
-                Header()
-                                ],
-                            ),
-                          ),
-                          Positioned(
-                            top: MediaQuery.of(context).size.height * 0.2,
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height * 0.8,
-                            child: Flex(
-                              direction: Axis.vertical,
-                              children: <Widget>[
-                                new Expanded(
-                                  child: PageView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    physics: BouncingScrollPhysics(),
-                                    controller: PageController(viewportFraction: 0.880),
-                                    itemCount: _categories.length,
-                                    itemBuilder: (BuildContext context, int index) {
-                                      Category currentDestination = _categories[index];
-                                      return GestureDetector(
-                                        onTap: () {
-                                          Navigator.pushNamed(context, "startup$index");
-                                        },
-                                        child: CategoryCard(
-                                          category: currentDestination,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                }
-                
+                new Expanded(
+                  child: PageView.builder(
+                    scrollDirection: Axis.horizontal,
+                    physics: BouncingScrollPhysics(),
+                    controller: PageController(viewportFraction: 0.880),
+                    itemCount: _categories.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, "startup/$index");
+                        },
+                        child: CategoryCard(
+                          category: _categories[index],
+                        ),
+                      );
+                    },
+                  ),
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

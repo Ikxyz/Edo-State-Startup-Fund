@@ -63,7 +63,7 @@ class StartupState$ extends Bloc<event$.startUp, dynamic> {
   @override
   get initialState => null;
   FirebaseUser _user;
-  get _startup => Startup();
+  get _startup => StartupClass();
 
   StartupState$() {}
   @override
@@ -71,5 +71,5 @@ class StartupState$ extends Bloc<event$.startUp, dynamic> {
     
   }
  
-  Stream<List<Startup>> myList() async* {}
+  Stream<List<StartupClass>> myList() async* {}
 }

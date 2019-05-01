@@ -1,14 +1,11 @@
+import 'package:eds_funds/import.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:eds_funds/utils/constants.dart';import 'package:eds_funds/classes/idea.dart';
+import 'package:eds_funds/utils/constants.dart';
 
 class StartupCard extends StatelessWidget {
-  const StartupCard({
-    Key key,
-    @required this.story,
-  }) : super(key: key);
-
-  final Idea story;
+  StartupClass _startup;
+  StartupCard(this._startup);
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +36,7 @@ class StartupCard extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      story.status.toUpperCase(),
+                      'SeedFund',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 9.0,
@@ -56,17 +53,17 @@ class StartupCard extends StatelessWidget {
                     color: Colors.green,
                   ),
                   Expanded(child: Container()),
-                  Image.asset(
-                    'assets/images/verified.png',
+                  CachedNetworkImage(
                     width: 15.0,
                     height: 15.0,
+                    imageUrl: _startup.image[0],
                   )
                 ],
               ),
               Container(
                 height: 50.0,
                 child: Text(
-                  story.title,
+                  _startup.name,
                   maxLines: 2,
                   style: TextStyle(
                     color: AppColors.boldText,
@@ -79,7 +76,7 @@ class StartupCard extends StatelessWidget {
               Container(
                 margin: EdgeInsets.symmetric(vertical: 10.0),
                 child: Text(
-                  story.excerpt,
+                  _startup.category,
                   textAlign: TextAlign.left,
                   maxLines: 5,
                   style: TextStyle(
@@ -95,7 +92,7 @@ class StartupCard extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(6.0)),
                     image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: AssetImage(story.image),
+                      image: AssetImage(_startup.image[0]),
                     ),
                   ),
                 ),

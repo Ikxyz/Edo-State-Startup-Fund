@@ -2,7 +2,7 @@ import 'package:eds_funds/routes/login/login.dart';
 import 'package:eds_funds/routes/startup/new_startup_screen.dart';
 import 'package:eds_funds/routes/startup/startup_screen.dart';
 import 'package:eds_funds/routes/home/home_screen.dart';
-import 'package:eds_funds/routes/details/startup_detail_screen.dart';
+import 'package:eds_funds/routes/startup_details/startup_detail_screen.dart';
 import 'package:eds_funds/widgets/route_animations.dart';
 import "package:flutter/material.dart";
 import 'package:eds_funds/routes/search/search_screen.dart';
@@ -13,9 +13,9 @@ class EDSFunds extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: _buildTheme(),
           onGenerateRoute: (RouteSettings settings) {
-            if (settings.name.contains("startup")) {
-              final categoryId =
-                  int.parse(settings.name.replaceAll("startup", ""));
+            if (settings.name.startsWith('startup')) {
+              final categoryId = int.parse(settings.name.split("/")[1]);
+              print('Route parameter: ${settings.name.split("/")[1]}');
               return FadeInRoute(builder: (context) {
                 return StartupScreen(categoryId);
               });

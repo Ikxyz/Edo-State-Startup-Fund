@@ -1,5 +1,5 @@
+import 'package:eds_funds/data/data.dart';
 import 'package:eds_funds/utils/constants.dart';
-import 'package:eds_funds/classes/idea.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +8,7 @@ class StartupDetailScreen extends StatelessWidget {
   StartupDetailScreen({Key key, @required this.id}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    final story = Idea.generate()[id];
+    final _startup = generateStartupData()[id];
     return new Material(
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -26,7 +26,7 @@ class StartupDetailScreen extends StatelessWidget {
                         width: MediaQuery.of(context).size.width,
                         padding: EdgeInsets.only(top: 40.0),
                         child: Text(
-                          story.title,
+                          _startup.name,
                           textAlign: TextAlign.left,
                           style: TextStyle(
                             color: AppColors.boldText,
@@ -39,7 +39,7 @@ class StartupDetailScreen extends StatelessWidget {
                       Container(
                         margin: EdgeInsets.symmetric(vertical: 10.0),
                         child: Text(
-                          story.excerpt,
+                          _startup.category,
                           textAlign: TextAlign.left,
                           style: TextStyle(
                             fontSize: 13.0,
@@ -57,7 +57,7 @@ class StartupDetailScreen extends StatelessWidget {
                           borderRadius: BorderRadius.all(Radius.circular(8.0)),
                           image: DecorationImage(
                             fit: BoxFit.cover,
-                            image: AssetImage(story.image),
+                            image: AssetImage(_startup.image[0]),
                           ),
                         ),
                         margin: EdgeInsets.symmetric(vertical: 10.0),
@@ -65,7 +65,7 @@ class StartupDetailScreen extends StatelessWidget {
                       Container(
                         margin: EdgeInsets.symmetric(vertical: 10.0),
                         child: Text(
-                          story.body,
+                          _startup.body,
                           textAlign: TextAlign.left,
                           style: TextStyle(
                             fontSize: 13.0,
