@@ -19,13 +19,19 @@ class _LoginRouteState extends State<LoginRoute>
   String email, pwd;
   final _loginKey = GlobalKey<FormState>();
   final _scafoldState = GlobalKey<ScaffoldState>();
-
-    $AppAuthState _appAuthState ;
+  bool _isWorking = false;
+  $AppAuthState _appAuthState;
 
   @override
   void initState() {
     super.initState();
     _appAuthState = $AppAuthState(context);
+  }
+
+  _isWorkingFun(bool e) {
+    setState(() {
+      _isWorking = e;
+    });
   }
 
   @override
@@ -34,13 +40,19 @@ class _LoginRouteState extends State<LoginRoute>
   }
 
   void _onLogin() async {
-    if (!_loginKey.currentState.validate()) return;
+    _isWorkingFun(true);
+    if (!_loginKey.currentState.validate()) {
+     _isWorkingFun(false);
+      return;
+    }
+    ;
     _loginKey.currentState.save();
     final _user = await Auth()
         .auth
         .signInWithEmailAndPassword(email: email, password: pwd)
         .catchError((err) {
       print(err);
+      _isWorkingFun(false);
       showSnackBar(_scafoldState, err.message.toString());
     });
     if (_user != null) {
@@ -48,6 +60,7 @@ class _LoginRouteState extends State<LoginRoute>
       Navigator.of(context)
           .pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
     }
+    _isWorkingFun(false);
   }
 
   @override
@@ -68,10 +81,20 @@ class _LoginRouteState extends State<LoginRoute>
             Container(
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Icon(
-                  Icons.play_circle_outline,
-                  color: Colors.blue,
-                  size: 40,
+                child: Row(
+                  children: <Widget>[
+                    Text(
+                      'EDS',
+                      style: TextStyle(color: Colors.teal, fontSize: 40),
+                    ),
+                    Text(
+                      'Funds',
+                      style: TextStyle(
+                          color: Colors.amber,
+                          fontSize: 35,
+                          fontWeight: FontWeight.bold),
+                    )
+                  ],
                 ),
               ),
             ),
@@ -134,26 +157,36 @@ class _LoginRouteState extends State<LoginRoute>
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: RaisedButton(
-                          onPressed: () {
-                            _onLogin();
-                          },
-                          elevation: 0,
-                          color: Colors.grey.shade200,
-                          padding: EdgeInsets.all(20),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Text(
-                                'Get Started',
-                                style: loginFormTextStyle,
+                            onPressed: () {
+                              _onLogin();
+                            },
+                            elevation: 0,
+                            color: Colors.grey.shade200,
+                            padding: EdgeInsets.all(20),
+                            child: Visibility(
+                              child: SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation(
+                                        Theme.of(context).indicatorColor,
+                                      ))),
+                              visible: _isWorking,
+                              replacement: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Text(
+                                    'Get Started',
+                                    style: loginFormTextStyle,
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Icon(Icons.arrow_forward)
+                                ],
                               ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Icon(Icons.arrow_forward)
-                            ],
-                          ),
-                        ),
+                            )),
                       ),
                     ),
                     SizedBox(

@@ -13,29 +13,37 @@ class EDSFunds extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: _buildTheme(),
           onGenerateRoute: (RouteSettings settings) {
-            if (settings.name.startsWith('startup')) {
-              final categoryId = int.parse(settings.name.split("/")[1]);
-              print('Route parameter: ${settings.name.split("/")[1]}');
+  if (settings.name == '/') {
+              return MaterialPageRoute(builder: (context) {
+                return HomeScreen();
+              });
+            }
+            else if (settings.name.startsWith("startupInfo")) {
+              final param = settings.name.split("/")[1];
+              print('Route paramter: $param');
+              return SlideLeftRoute(builder: (context) {
+                return StartupDetailScreen(param);
+              });
+            }
+           else if (settings.name.startsWith('startup')) {
+              final param = int.parse(settings.name.split("/")[1]);
+
               return FadeInRoute(builder: (context) {
-                return StartupScreen(categoryId);
+                return StartupScreen(param);
               });
             } else if (settings.name == '/addStartup') {
               return FadeInRoute(builder: (context) {
                 return NewStartupScreen();
               });
-            } else if (settings.name.contains("ideas")) {
-              final int ideaId =
-                  int.parse(settings.name.replaceAll("ideas", ""));
+            } else if (settings.name.startsWith("startupInfo")) {
+              final param = settings.name.split("/")[1];
+              print('Route paramter: $param');
               return SlideLeftRoute(builder: (context) {
                 return StartupDetailScreen(
-                  id: ideaId,
+                  param,
                 );
               });
-            } else if (settings.name == '/') {
-              return MaterialPageRoute(builder: (context) {
-                return HomeScreen();
-              });
-            } else if (settings.name == "/search") {
+            }  else if (settings.name == "/search") {
               return FadeInRoute(builder: (context) {
                 return SearchScreen();
               });

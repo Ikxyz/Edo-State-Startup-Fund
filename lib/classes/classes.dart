@@ -103,6 +103,65 @@ void navigate(
   );
 }
 
+typedef Widget asyncWhileWaitType(AsyncSnapshot);
+
+/// Handles AsyncSnapshot waiting peroid
+Widget asyncWhileWaiting(AsyncSnapshot snapshot, @required Widget fun,
+    {String emptyListMsg: 'No item found', emptyListMsgColor: Colors.white}) {
+  if (snapshot.hasData) {
+    if (snapshot.data.runtimeType == QuerySnapshot) {
+      final AsyncSnapshot<QuerySnapshot> e = snapshot;
+
+      if (e.data.documentChanges.length < 1) {
+        return Container(
+          child: Center(
+            child: Text(
+              emptyListMsg,
+              style: TextStyle(color: emptyListMsgColor),
+            ),
+          ),
+        );
+      } else {
+        return fun;
+      }
+    } else if (snapshot.data.runtimeType == DocumentSnapshot) {
+      if(snapshot.data.exists){
+
+      return fun;
+      }else{
+         return Container(
+          child: Center(
+            child: Text(
+              emptyListMsg,
+              style: TextStyle(color: emptyListMsgColor),
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  if (snapshot.hasError) {
+    return Container(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Center(
+          child: Text('${snapshot.error.toString()}',style: TextStyle(),textAlign: TextAlign.center,),
+        ),
+      ),
+    );
+  }
+
+  return Container(
+    child: Center(
+      child: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation(Colors.white),
+        strokeWidth: 2,
+      ),
+    ),
+  );
+}
+
 /// Signin with federated account
 dynamic signInWith({GlobalKey<ScaffoldState> state}) async {
   GoogleSignIn _googleSignIn = GoogleSignIn();

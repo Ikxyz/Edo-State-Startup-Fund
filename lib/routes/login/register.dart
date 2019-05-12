@@ -12,16 +12,22 @@ class RegistrationRoute extends StatefulWidget {
 
 class _RegistrationRouteState extends State<RegistrationRoute> {
   final _auth = Auth();
-  final _userProfile = UsersProfile(firstName: null,lastName: null,tel: null,address: null);
+  final _userProfile =
+      UsersProfile(firstName: null, lastName: null, tel: null, address: null);
   final _regKey = GlobalKey<FormState>();
   final _scaffoldState = GlobalKey<ScaffoldState>();
+
+  bool _isWorking = false;
   void _register() async {
+    _isWorkingFun(true);
     if (!_regKey.currentState.validate()) {
+      _isWorkingFun(false);
       return showSnackBar(_scaffoldState, 'Fill in your details to continue');
     }
     _regKey.currentState.save();
 
     if (_userProfile.pwd != _userProfile.retypePwd) {
+      _isWorkingFun(false);
       return showSnackBar(_scaffoldState, 'Password don\'t macth');
     }
 
@@ -33,15 +39,19 @@ class _RegistrationRouteState extends State<RegistrationRoute> {
         pwd: _userProfile.pwd));
 
     var result = await _auth.createAccount(_data);
-    print('Result: $result');
-
     if (result['success']) {
-     
       Navigator.of(context)
-        .pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
- 
+          .pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
+
       return showSnackBar(_scaffoldState, result['message']);
     }
+    _isWorkingFun(false);
+  }
+
+  _isWorkingFun(bool e) {
+    setState(() {
+      _isWorking = e;
+    });
   }
 
   @override
@@ -50,22 +60,33 @@ class _RegistrationRouteState extends State<RegistrationRoute> {
       key: _scaffoldState,
       body: Container(
         child: Center(
-            child: Form(key: _regKey,
-                          child: ListView(
-          padding: EdgeInsets.only(
+            child: Form(
+          key: _regKey,
+          child: ListView(
+            padding: EdgeInsets.only(
               left: 30,
-          ),
-          children: <Widget>[
+            ),
+            children: <Widget>[
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.05,
               ),
               Container(
                 child: Align(
                   alignment: Alignment.centerLeft,
-                  child: Icon(
-                    Icons.play_circle_outline,
-                    color: Colors.blue,
-                    size: 40,
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        'EDS',
+                        style: TextStyle(color: Colors.teal, fontSize: 40),
+                      ),
+                      Text(
+                        'Funds',
+                        style: TextStyle(
+                            color: Colors.amber,
+                            fontSize: 35,
+                            fontWeight: FontWeight.bold),
+                      )
+                    ],
                   ),
                 ),
               ),
@@ -179,18 +200,29 @@ class _RegistrationRouteState extends State<RegistrationRoute> {
                     elevation: 0,
                     color: Colors.grey.shade200,
                     padding: EdgeInsets.all(20),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Text(
-                          'Register',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Icon(Icons.arrow_forward)
-                      ],
+                    child: Visibility(
+                      child: SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation(
+                                Theme.of(context).indicatorColor,
+                              ))),
+                      visible: _isWorking,
+                      replacement: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Text(
+                            'Register',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Icon(Icons.arrow_forward)
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -228,9 +260,9 @@ class _RegistrationRouteState extends State<RegistrationRoute> {
               SizedBox(
                 height: 50,
               ),
-          ],
-        ),
-            )),
+            ],
+          ),
+        )),
       ),
     );
   }

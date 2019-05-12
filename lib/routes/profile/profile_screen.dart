@@ -448,7 +448,7 @@ class ProfileHeader extends StatelessWidget {
           height: 60.0,
           decoration: new BoxDecoration(
             image: new DecorationImage(
-                image: new NetworkImage(user.passport == null
+                image: new CachedNetworkImageProvider(user.passport == null
                     ? getDefaultImageUrl(user.email)
                     : user.passport),
                 fit: BoxFit.cover),
@@ -645,7 +645,7 @@ class QuickActions extends StatelessWidget {
                   spreadRadius: 1.0,
                   offset: new Offset(0.0, 1.0)),
             ],
-            image: DecorationImage(image: NetworkImage(backgroundImage),fit: BoxFit.cover)),
+            image: DecorationImage(image: CachedNetworkImageProvider(backgroundImage),fit: BoxFit.cover)),
         child: new Stack(
           children: <Widget>[
             new Container(

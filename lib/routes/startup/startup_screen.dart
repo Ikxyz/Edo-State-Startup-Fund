@@ -223,7 +223,6 @@ class CategoryDetailScreenState extends State<StartupScreen>
     );
   }
 
-// TODO: populate with online data
   Widget buildListView() {
     return Container(
       child: StreamBuilder(
@@ -233,12 +232,12 @@ class CategoryDetailScreenState extends State<StartupScreen>
             .limit(20)
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasData) {
-           return ListView(
+          return asyncWhileWaiting(snapshot, 
+            snapshot.hasData?  ListView(
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.only(left: 16.0),
               controller: ScrollController(initialScrollOffset: 20.0),
-              children: snapshot.data.documentChanges.map((docSnapshot) {
+              children:snapshot.data.documentChanges.map((docSnapshot) {
                 final _doc = docSnapshot.document;
                 final _startup = StartupClass.fromJson(_doc.data);
                 return GestureDetector(
@@ -251,23 +250,8 @@ class CategoryDetailScreenState extends State<StartupScreen>
                   ),
                 );
               }).toList(),
-            );
-          }
-          if (snapshot.hasError) {
-            return Container(
-              child: Center(
-                child: Text('${snapshot.error.toString()}'),
-              ),
-            );
-          }
-          return Container(
-            child: Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(Colors.white),
-                strokeWidth: 2,
-              ),
-            ),
-          );
+            ):Offstage()
+           , emptyListMsg: 'Check back later');
         },
       ),
     );

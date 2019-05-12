@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eds_funds/classes/user_profile_class.dart';
 import 'package:eds_funds/routes/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +71,7 @@ class _HeaderState extends State<Header> {
                       borderRadius: BorderRadius.all(Radius.circular(30)),
                       color: Colors.blue,
                       image: DecorationImage(
-                          image: NetworkImage(getDefaultImageUrl(e.email)))),
+                          image: CachedNetworkImageProvider(getDefaultImageUrl(e.email)))),
                 ),
                 onTap: () {
                   Navigator.of(context).push(

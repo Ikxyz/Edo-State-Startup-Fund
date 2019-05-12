@@ -92,7 +92,7 @@ class StartupCard extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(6.0)),
                     image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: AssetImage(_startup.image[0]),
+                      image: CachedNetworkImageProvider( _startup.image[0],),
                     ),
                   ),
                 ),

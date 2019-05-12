@@ -26,7 +26,6 @@ class HomeScreenState extends State<HomeScreen> {
 
   Widget build(BuildContext ctx) {
    
-   // FirebaseAuth.instance.signOut();
     return Scaffold(
       key: _state,
       body: ExploreTab(),

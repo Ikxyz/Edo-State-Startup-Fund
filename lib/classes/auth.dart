@@ -1,6 +1,7 @@
 import 'package:eds_funds/import.dart';
 
-import  'package:http/http.dart' as http;
+import 'package:http/http.dart' as http;
+
 class Auth {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -96,8 +97,10 @@ class Auth {
     }
     try {
       var res = await http.post(
-          'https://us-central1-edostartupfund.cloudfunctions.net/signUp',headers: { 
-    'Accept': 'application/json',},
+          'https://us-central1-edostartupfund.cloudfunctions.net/signUp',
+          headers: {
+            'Accept': 'application/json',
+          },
           body: {
             'address': _userProfile.address.toString(),
             'email': _userProfile.email.toString(),
@@ -106,17 +109,16 @@ class Auth {
             'pwd': _userProfile.pwd.toString()
           }).catchError((err) {
         print(err);
-      });
-      print(res.body);
-      Map<String,dynamic> extract = Map<String,dynamic>.from(jsonDecode(res.body));
+      }); 
+      Map<String, dynamic> extract =
+          Map<String, dynamic>.from(jsonDecode(res.body));
       print('Decode msg: $extract');
       assert(extract['success']);
-      print(
-          'login Info: ${_userProfile.email.toString()} ${_userProfile.pwd.toString()}');
+ 
       _user = await _auth.signInWithEmailAndPassword(
           email: _userProfile.email.toString(),
           password: _userProfile.pwd.toString());
-
+      severResult = extract;
       severResult['data'] = _user;
       return severResult;
     } catch (err) {

@@ -1,5 +1,5 @@
 import 'dart:async';
- 
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:eds_funds/import.dart';
@@ -229,26 +229,26 @@ class CategoryDetailScreenState extends State<CategoryScreen>
           .where('category', isEqualTo: widget.destination.title)
           .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapShot) {
-        if (snapShot.hasData) {
-          if (snapShot.data.documentChanges.length > 0) {
-            return ListView(
-              scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.only(left: 16.0),
-              // controller: ScrollController(initialScrollOffset: 20.0),
-              children: snapShot.data.documentChanges.map((docSnapshot) {
-                return GestureDetector(
-                  onTap: () => Navigator.pushNamed(
-                      context, "ideas/${docSnapshot.document.documentID}"),
-                  child: Container(
-                    height: 400.0,
-                    padding: EdgeInsets.fromLTRB(0.0, 0.0, 5.0, 20.0),
-                    child: StartDetails(),
-                  ),
-                );
-              }).toList(),
-            );
-          }
-        }
+        asyncWhileWaiting(
+            snapShot,
+            snapShot.hasData
+                ? ListView(
+                    scrollDirection: Axis.horizontal,
+                    padding: EdgeInsets.only(left: 16.0),
+                    // controller: ScrollController(initialScrollOffset: 20.0),
+                    children: snapShot.data.documentChanges.map((docSnapshot) {
+                      return GestureDetector(
+                        onTap: () => Navigator.pushNamed(context,
+                            "ideas/${docSnapshot.document.documentID}"),
+                        child: Container(
+                          height: 400.0,
+                          padding: EdgeInsets.fromLTRB(0.0, 0.0, 5.0, 20.0),
+                          child: StartDetails(),
+                        ),
+                      );
+                    }).toList(),
+                  )
+                : Offstage());
       },
     );
   }
