@@ -76,7 +76,7 @@ class StartupCard extends StatelessWidget {
               Container(
                 margin: EdgeInsets.symmetric(vertical: 10.0),
                 child: Text(
-                  _startup.category,
+                  _startup.desc,
                   textAlign: TextAlign.left,
                   maxLines: 5,
                   style: TextStyle(
