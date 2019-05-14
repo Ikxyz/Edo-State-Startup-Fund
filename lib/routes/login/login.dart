@@ -88,7 +88,7 @@ class _LoginRouteState extends State<LoginRoute>
                       style: TextStyle(color: Colors.teal, fontSize: 40),
                     ),
                     Text(
-                      'Suf',
+                      'SUF',
                       style: TextStyle(
                           color: Colors.amber,
                           fontSize: 35,
