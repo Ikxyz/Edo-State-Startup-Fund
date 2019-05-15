@@ -76,11 +76,11 @@ class _RegistrationRouteState extends State<RegistrationRoute> {
                   child: Row(
                     children: <Widget>[
                       Text(
-                        'EDS',
+                        'ED',
                         style: TextStyle(color: Colors.teal, fontSize: 40),
                       ),
                       Text(
-                        'Funds',
+                        'SUF',
                         style: TextStyle(
                             color: Colors.amber,
                             fontSize: 35,
